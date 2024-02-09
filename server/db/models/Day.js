@@ -1,26 +1,8 @@
 const {Schema} = require('mongoose');
 const mongoose = require('mongoose');
+const EventSchema = require('./Event').EventSchema;
+const shortEventSchema = require('./Event').shortEventSchema;
 
-
-const EventSchema = new Schema({
-    startTime: {
-        type: String,
-    },
-    endTime: {
-        type: String,
-    },
-    title: {
-        type: String,
-    },
-    recurring: {
-        type: Boolean,
-        default: false,
-    },
-    recursEvery: {
-        type: Number,
-        default: null,
-    }, 
-});
 
 const DaySchema = new Schema({
     date: {
@@ -32,11 +14,19 @@ const DaySchema = new Schema({
         required: true,
     },
     events: [EventSchema],
-    food: [EventSchema],
+    food: [shortEventSchema],
     medication: [EventSchema],
-    symptoms: [EventSchema],
+    symptoms: [shortEventSchema],
     reflection: {
-        type: String,
+        body: {
+            type: String,
+        },
+        stress: {
+            type: Number,
+        },
+        emotion: {
+            type: String,
+        }
     },
 
 });

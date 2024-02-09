@@ -16,6 +16,7 @@ connectToDatabase();
 app.use(express.json());
 
 app.use('/user', routes.user);
+app.use('/event', routes.event);
 
 app.get('/', (req,res,next)=>{
     res.send('server is up on port 3000');
