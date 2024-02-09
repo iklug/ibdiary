@@ -1,0 +1,26 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "description": "a web server in nodejs",
+  "main": "app.js",
+  "scripts": {
+    "test": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/iklug/ibdiary.git"
+  },
+  "author": "Ian Klug",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/iklug/ibdiary/issues"
+  },
+  "homepage": "https://github.com/iklug/ibdiary#readme",
+  "dependencies": {
+    "express": "^4.18.2",
+    "express-session": "^1.18.0",
+    "mongoose": "^8.1.1",
+    "passport": "^0.7.0",
+    "passport-local": "^1.0.0"
+  }
+}
