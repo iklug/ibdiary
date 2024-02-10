@@ -48,7 +48,7 @@ const exampleDay = {
         recursEvery: 28
       }
     ],
-    symptoms: [],
+    symptoms: [{title: 'nausea'}, {title: 'rectal bleeding'}, {title: 'abdominal pain', startTime: '1600'}],
     reflection: {
         body: 'You know today was a pretty good day. My stress levels were low and even though I bled out of my booty hole, I do not think that is a huge deal',
         stress: 4,
@@ -66,5 +66,42 @@ router.get('/', async (req,res)=>{
         res.status(500).json({message: error.message});
     }
 });
+
+//for posting you initial event on a day -- it will set up the model to then be edited in the future
+router.post('/', async (req,res)=> {
+    try {
+        
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+});
+
+//for editing the established Day model with new events and removing certain events
+//this might be an inefficient way of doing things, as the entire data may need to be replaced every time
+//look into the mongoose findOneAndUpdate method -- might be what i'm looking for
+router.put('/', async (req,res)=> {
+    try {
+        
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+});
+
+//hypothetically when deleting the last event of the day??
+//i don't know how it would make it know.. maybe it would stay and just be blank?
+//but if that happened for every day you would need to make fetch requests for essentially nothing.
+router.delete('/', async (req,res)=> {
+    try {
+        
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+});
+
+
+
+
+
+
 
 module.exports = router;

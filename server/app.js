@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const session = require('express-session');
 const connectToDatabase = require('./db/db.js');
 const routes = require('./db/routes/index');
+
 require("dotenv").config();
 
 
@@ -12,6 +13,8 @@ const app = express();
 const PORT = 3000;
 
 connectToDatabase();
+
+console.log(exampleDay);
 
 app.use(express.json());
 
