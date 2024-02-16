@@ -8,7 +8,7 @@ const NextMonthButton = ({month}) => {
     const dispatch = useDispatch();
 
     const nextMonth = (currentMonth) => {
-        console.log(currentMonth);
+        
         if(currentMonth === 11){
             dispatch(incrementMonth());
             dispatch(incrementYear());

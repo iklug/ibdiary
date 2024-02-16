@@ -29,10 +29,20 @@ export const dateSlice = createSlice({
         decrementYear: (state) => {
             state.value.viewing.year--;
         },
+        incrementWeek: (state) => {
+            state.value.viewing.week === state.value.viewing.weekAmount - 14 ? state.value.viewing.week = 0 : 
+            state.value.viewing.week+=7;
+        },
+        decrementWeek: (state) => {
+            state.value.viewing.weekAmount-=7;
+        },
+        addWeeks: (state, action) => {
+            state.value.viewing.weekAmount = action.payload;
+        }
     }
 });
 
-export const {addToday, addViewing, incrementMonth, decrementMonth, incrementYear, decrementYear} = dateSlice.actions;
+export const {addToday, addViewing, incrementMonth, decrementMonth, incrementYear, decrementYear, incrementWeek, decrementWeek, addWeeks} = dateSlice.actions;
 export const selectToday = (state) => state.date.value.today;
 export const selectView = (state) => state.date.value.viewing;
 export default dateSlice.reducer;

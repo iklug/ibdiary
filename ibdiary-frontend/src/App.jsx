@@ -6,7 +6,7 @@ import Day from './components/Calendar/Day';
 import MonthView from './components/Calendar/MonthView';
 import { useDispatch, useSelector } from 'react-redux';
 import {addToday, selectToday, addViewing, selectView} from './redux/dateSlice';
-
+import WeekView from './components/Calendar/WeekView';
 
 function App() {
 
@@ -20,14 +20,21 @@ if(!useSelector(selectToday)){
     year: today.getFullYear(),
     month: today.getMonth(),
     day: today.getDate(),
+    string: `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`
   };
+  const viewObject = {
+    year: today.getFullYear(),
+    month: today.getMonth(),
+    day: today.getDate(),
+    week: 0,
+  }
   
   dispatch(addToday(todayObject));
-  dispatch(addViewing(todayObject));
+  dispatch(addViewing(viewObject));
 }
 
 
-
+const today = useSelector(selectToday);
 const view = useSelector(selectView);
 
   return (
@@ -35,7 +42,8 @@ const view = useSelector(selectView);
     // <Button size='small' color={color} name='submit' handleClick={handleClick} />
     <div>
       <Banner />
-      <MonthView year={view.year} month={view.month} />
+      <MonthView year={view.year} month={view.month} today={today.day} />
+      {/* <WeekView year={view.year} month={view.month} today={today}/> */}
     </div>
   ) 
 }

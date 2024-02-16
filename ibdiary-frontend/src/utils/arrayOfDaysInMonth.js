@@ -1,6 +1,15 @@
 
 const arrayOfDaysInMonth = (year, month) => {
-    let totalDays;
+   if(month === -1){
+      year-=1;
+      month=11;
+   }
+   if(month === 12){
+      year+=1;
+      month=0;
+   } 
+   
+   let totalDays;
      if(month === 1){
         year % 4 === 0 ? totalDays = 29 : totalDays = 28;
      }
@@ -11,6 +20,7 @@ const arrayOfDaysInMonth = (year, month) => {
         totalDays = 31;
      }
 
+   
     const totalDayArray = [...Array(totalDays).keys()].map(i => {return {year,month,day: i+1}});
  
     return totalDayArray;

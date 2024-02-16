@@ -6,7 +6,7 @@ import buildCalendar from "../../utils/buildCalendar";
 import DayOfTheWeek from "../DayOfTheWeek";
 import dayNames from "../../utils/dayNames";
 
-const MonthView = ({year, month}) => {
+const MonthView = ({year, month, today}) => {
 
 const [sixRows, setSixRows] = useState(null);
 const thisMonthDays = arrayOfDaysInMonth(year, month);
@@ -14,11 +14,12 @@ const daysBefore = arrayOfDaysInMonth(year, month - 1);
 const nextMonthDays = arrayOfDaysInMonth(year, month + 1);
 const firstDay = findFirstDay(year, month);
 
+
 useEffect(()=>{
    thisMonthDays.length + firstDay > 35 ? setSixRows(true) : setSixRows(false); 
 }, [month])
 
-const dayArray = buildCalendar(thisMonthDays, firstDay, daysBefore, nextMonthDays);
+const dayArray = buildCalendar(thisMonthDays, firstDay, daysBefore, nextMonthDays, today);
 const dayArrayMap = dayArray.map(x => <Day {...x} key={`${x.year}-${x.month}-${x.day}`} />)
 
 
