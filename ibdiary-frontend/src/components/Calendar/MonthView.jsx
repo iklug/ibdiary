@@ -5,6 +5,7 @@ import Day from "./Day";
 import buildCalendar from "../../utils/buildCalendar";
 import DayOfTheWeek from "../DayOfTheWeek";
 import dayNames from "../../utils/dayNames";
+import AddEvent from './AddEvent';
 
 const MonthView = ({year, month, today}) => {
 
@@ -14,6 +15,30 @@ const daysBefore = arrayOfDaysInMonth(year, month - 1);
 const nextMonthDays = arrayOfDaysInMonth(year, month + 1);
 const firstDay = findFirstDay(year, month);
 
+const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+
+// Define a function to update window width in state
+const updateWindowWidth = () => {
+  setWindowWidth(window.innerWidth);
+};
+const updateWindowHeight = () => {
+    setWindowHeight(window.innerHeight);
+}
+
+// Add event listener to update window width on resize
+useEffect(() => {
+  window.addEventListener('resize', updateWindowWidth);
+  window.addEventListener('resize', updateWindowHeight);
+  
+  // Clean up the event listener
+  return () => {
+    window.removeEventListener('resize', updateWindowWidth);
+    window.removeEventListener('resize', updateWindowHeight);
+  };
+}, []);
+
+console.log(windowWidth);
 
 useEffect(()=>{
    thisMonthDays.length + firstDay > 35 ? setSixRows(true) : setSixRows(false); 
@@ -22,9 +47,11 @@ useEffect(()=>{
 const dayArray = buildCalendar(thisMonthDays, firstDay, daysBefore, nextMonthDays, today);
 const dayArrayMap = dayArray.map(x => <Day {...x} key={`${x.year}-${x.month}-${x.day}`} />)
 
+console.log(window.innerHeight, window.innerWidth);
 
     return (
         <div className={`flex flex-col monthCalSix text-gray-500`}>
+            <AddEvent />
             <div className="flex">
                 {dayNames.map(x => <DayOfTheWeek day={x} key={x} />)}
             </div>

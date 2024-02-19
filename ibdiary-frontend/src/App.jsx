@@ -8,6 +8,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import {addToday, selectToday, addViewing, selectView} from './redux/dateSlice';
 import WeekView from './components/Calendar/WeekView';
 
+
 function App() {
 
 const dispatch = useDispatch();
@@ -43,6 +44,7 @@ const view = useSelector(selectView);
     <div>
       <Banner />
       <MonthView year={view.year} month={view.month} today={today.day} />
+      
       {/* <WeekView year={view.year} month={view.month} today={today}/> */}
     </div>
   ) 

@@ -10,7 +10,7 @@ import { useDispatch, useSelector } from "react-redux";
 import {selectView, selectToday, addViewing} from "../../redux/dateSlice";
 import PreviousWeekButton from "./PreviousWeekButton";
 import NextWeekButton from "./NextWeekButton";
-
+import CreateEvent from "./CreateEvent";
 
 const Banner = () => {
 
@@ -43,6 +43,7 @@ console.log('redux viewDate: ', viewDate);
                 </div>
             </div>
             <div className="flex gap-4 items-center">
+                <CreateEvent />
                 <div id='viewMenu'>
                     <BannerButton name={view} clickFunction={()=>setViewDropdown(!viewDropdown)}/>
                     {viewDropdown && <CalendarViewDropdown changeView={changeView}/>}
