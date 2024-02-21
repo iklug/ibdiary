@@ -26,18 +26,20 @@ const EventSchema = new Schema({
     }  
 });
 
-const shortEventSchema = new Schema({
-    title: {
-        type: String,
-        required: true,
-    },
-    startTime: {
-        type: String,
-    },
-    endTime: {
-        type: String,
-    },
-});
+// const shortEventSchema = new Schema({
+//     title: {
+//         type: String,
+//         required: true,
+//     },
+//     startTime: {
+//         type: String,
+//     },
+//     endTime: {
+//         type: String,
+//     },
+// });
 
-module.exports.EventSchema = EventSchema;
-module.exports.shortEventSchema = shortEventSchema;
+// module.exports.EventSchema = EventSchema;
+// module.exports.shortEventSchema = shortEventSchema;
+
+module.exports = mongoose.model('Event', EventSchema);

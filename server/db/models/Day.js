@@ -10,13 +10,13 @@ const DaySchema = new Schema({
         required: true,
     },
     user: {
-        type: Schema.Types.ObjectId,
+        type: String,
         required: true,
     },
-    events: [EventSchema],
-    food: [shortEventSchema],
-    medication: [EventSchema],
-    symptoms: [shortEventSchema],
+    // events: [EventSchema],
+    // food: [shortEventSchema],
+    // medication: [EventSchema],
+    // symptoms: [shortEventSchema],
     reflection: {
         body: {
             type: String,

@@ -77,31 +77,37 @@ router.get('/:year/:month', async (req,res)=>{
 router.post('/', async (req,res)=> {
     try {
         const day = await Day.find({date: req.body.date});
-        if(day){
-          const newEvent = await Event.create({
+
+        if(day.length > 0){
+          console.log(day);
+          const event = await Event.create({
+            day: day[0]._id,
             title: req.body.title,
             type: req.body.type,
-            date: req.body.date,
             startTime: req.body.startTime,
             endTime: req.body.endTime,
-            day: day._id,
-          })
-          res.send('created new event');
+            repeat: req.body.repeat,
+          });
+
+          res.send(event);
         }
-        if(!day){
+        if(day.length === 0){
           const newDay = await Day.create({
             date: req.body.date,
-            user: req.user._id
+            user: 'user',
           });
-          const newEvent = await Event.create({
+          console.log(newDay);
+          const newEvent = await Event.create(
+            {day: newDay._id,
             title: req.body.title,
             type: req.body.type,
-            date: req.body.date,
-            startTime: req.body.startTime,
             endTime: req.body.endTime,
-            day: newDay._id,
-          })
-          res.send('created new day and new event');
+            startTime: req.body.startTime,
+            repeat: req.body.repeat,
+          }
+          )
+
+          res.send(newEvent);
         }
     } catch (error) {
         res.status(500).json({message: error.message});
