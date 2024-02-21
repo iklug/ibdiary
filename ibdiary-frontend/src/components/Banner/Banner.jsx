@@ -11,6 +11,9 @@ import {selectView, selectToday, addViewing} from "../../redux/dateSlice";
 import PreviousWeekButton from "./PreviousWeekButton";
 import NextWeekButton from "./NextWeekButton";
 import CreateEvent from "./CreateEvent";
+import AddEvent from "../Calendar/AddEvent";
+import { selectNewEvent } from "../../redux/newEventSlice";
+
 
 const Banner = () => {
 
@@ -20,17 +23,23 @@ const [viewDropdown, setViewDropdown] = useState(false);
 const viewDate = useSelector(selectView);
 const todaysDate = useSelector(selectToday);
 const dispatch = useDispatch();
+const [newEvent, setNewEvent] = useState(false);
+
+
 
 const changeView = (e) => {
     setView(e.target.textContent);
     setViewDropdown(false);
 }
 
+
+
 console.log('redux viewDate: ', viewDate);
 
 
     return (
         <div className="h-16 min-w-60 pl-3 pr-3 flex justify-between items-center shadow-sm">
+            {newEvent && <AddEvent closeEvent={()=>setNewEvent(false)}/>}
             <div className=" w-96 flex items-center justify-between">
                 < BannerLogo />
                 <div className="flex items-center gap-4 min-w-60 pr-4">
@@ -43,7 +52,7 @@ console.log('redux viewDate: ', viewDate);
                 </div>
             </div>
             <div className="flex gap-4 items-center">
-                <CreateEvent />
+                <CreateEvent clickFunction={()=>setNewEvent(!newEvent)}/>
                 <div id='viewMenu'>
                     <BannerButton name={view} clickFunction={()=>setViewDropdown(!viewDropdown)}/>
                     {viewDropdown && <CalendarViewDropdown changeView={changeView}/>}

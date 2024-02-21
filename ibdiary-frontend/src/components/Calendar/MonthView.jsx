@@ -6,6 +6,8 @@ import buildCalendar from "../../utils/buildCalendar";
 import DayOfTheWeek from "../DayOfTheWeek";
 import dayNames from "../../utils/dayNames";
 import AddEvent from './AddEvent';
+import { useSelector, useDispatch } from "react-redux";
+import { selectNewEvent, openNewEvent } from "../../redux/newEventSlice";
 
 const MonthView = ({year, month, today}) => {
 
@@ -17,6 +19,8 @@ const firstDay = findFirstDay(year, month);
 
 const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+
+const dispatch = useDispatch();
 
 // Define a function to update window width in state
 const updateWindowWidth = () => {
@@ -38,7 +42,7 @@ useEffect(() => {
   };
 }, []);
 
-console.log(windowWidth);
+console.log('😀😀😀😀😀😀', 'why does this refresh??')
 
 useEffect(()=>{
    thisMonthDays.length + firstDay > 35 ? setSixRows(true) : setSixRows(false); 
@@ -51,7 +55,6 @@ console.log(window.innerHeight, window.innerWidth);
 
     return (
         <div className={`flex flex-col monthCalSix text-gray-500`}>
-            <AddEvent />
             <div className="flex">
                 {dayNames.map(x => <DayOfTheWeek day={x} key={x} />)}
             </div>

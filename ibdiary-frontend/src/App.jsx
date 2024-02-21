@@ -7,7 +7,8 @@ import MonthView from './components/Calendar/MonthView';
 import { useDispatch, useSelector } from 'react-redux';
 import {addToday, selectToday, addViewing, selectView} from './redux/dateSlice';
 import WeekView from './components/Calendar/WeekView';
-
+import { selectNewEvent, openNewEvent } from "./redux/newEventSlice";
+import AddEvent from './components/Calendar/AddEvent';
 
 function App() {
 
@@ -37,6 +38,9 @@ if(!useSelector(selectToday)){
 
 const today = useSelector(selectToday);
 const view = useSelector(selectView);
+const newEvent = useSelector(selectNewEvent).open;
+
+
 
   return (
 
