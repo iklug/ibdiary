@@ -4,6 +4,11 @@ const mongoose = require('mongoose');
 const EventSchema = new Schema({
     title: {
         type: String,
+        required: true,
+    },
+    type: {
+        type: String,
+        required: true,
     },
     startTime: {
         type: String,
@@ -11,19 +16,20 @@ const EventSchema = new Schema({
     endTime: {
         type: String,
     },
-    recurring: {
-        type: Boolean,
-        default: false,
+    repeat: {
+        type: String,
+        default: 'undefined',
     },
-    recursEvery: {
-        type: Number,
-        default: null,
-    }, 
+    day: {
+        type: Schema.Types.ObjectId,
+        required: true,
+    }  
 });
 
 const shortEventSchema = new Schema({
     title: {
         type: String,
+        required: true,
     },
     startTime: {
         type: String,

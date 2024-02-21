@@ -14,8 +14,6 @@ const PORT = 3000;
 
 connectToDatabase();
 
-console.log(exampleDay);
-
 app.use(express.json());
 
 app.use('/user', routes.user);
