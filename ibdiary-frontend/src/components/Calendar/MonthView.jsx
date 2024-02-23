@@ -5,7 +5,6 @@ import Day from "./Day";
 import buildCalendar from "../../utils/buildCalendar";
 import DayOfTheWeek from "../DayOfTheWeek";
 import dayNames from "../../utils/dayNames";
-import AddEvent from './AddEvent';
 import { useSelector, useDispatch } from "react-redux";
 import { selectNewEvent, openNewEvent } from "../../redux/newEventSlice";
 

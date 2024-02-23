@@ -32,11 +32,6 @@ const changeView = (e) => {
     setViewDropdown(false);
 }
 
-
-
-console.log('redux viewDate: ', viewDate);
-
-
     return (
         <div className="h-16 min-w-60 pl-3 pr-3 flex justify-between items-center shadow-sm">
             {newEvent && <AddEvent closeEvent={()=>setNewEvent(false)}/>}
