@@ -66,53 +66,90 @@ router.get('/:year/:month', async (req,res)=>{
     console.log('is this being requested');
     try {
         const monthOfEvents = await Day.find({date: {$regex: regexSearch}});
-        console.log(monthOfEvents);
+        //this could be 30 events .. and then the way i have it set up you'd have to do 30 searches to find groups of events
         res.send(monthOfEvents);
     } catch (error) {
         res.status(500).json({message: error.message});
     }
 });
 
-//for posting you initial event on a day -- it will set up the model to then be edited in the future
 router.post('/', async (req,res)=> {
     try {
         const day = await Day.find({date: req.body.date});
 
         if(day.length > 0){
-          console.log(day);
-          const event = await Event.create({
-            day: day[0]._id,
+          const update = {$push: { events:{
             title: req.body.title,
             type: req.body.type,
             startTime: req.body.startTime,
             endTime: req.body.endTime,
-            repeat: req.body.repeat,
-          });
-
+            repeat: req.body.repeat,}
+          }}
+          const event = await Day.findOneAndUpdate({_id:day[0]._id}, update, {new:true, runValidators: true});
+        
           res.send(event);
         }
         if(day.length === 0){
           const newDay = await Day.create({
             date: req.body.date,
             user: 'user',
+            events: [
+              {
+                title: req.body.title,
+                type: req.body.type,
+                startTime: req.body.startTime,
+                endTime: req.body.endTime,
+                repeat: req.body.repeat,
+              }
+            ],
           });
-          console.log(newDay);
-          const newEvent = await Event.create(
-            {day: newDay._id,
-            title: req.body.title,
-            type: req.body.type,
-            endTime: req.body.endTime,
-            startTime: req.body.startTime,
-            repeat: req.body.repeat,
-          }
-          )
+         
 
-          res.send(newEvent);
+          res.send(newDay);
         }
     } catch (error) {
         res.status(500).json({message: error.message});
     }
 });
+// router.post('/', async (req,res)=> {
+//     try {
+//         const day = await Day.find({date: req.body.date});
+
+//         if(day.length > 0){
+//           const event = await Event.create({
+//             day: day[0]._id,
+//             title: req.body.title,
+//             type: req.body.type,
+//             startTime: req.body.startTime,
+//             endTime: req.body.endTime,
+//             repeat: req.body.repeat,
+//           });
+
+//           res.send(event);
+//         }
+//         if(day.length === 0){
+//           const newDay = await Day.create({
+//             date: req.body.date,
+//             user: 'user',
+//           });
+//           console.log(newDay);
+//           const newEvent = await Event.create(
+//             {
+//               day: newDay._id,
+//             title: req.body.title,
+//             type: req.body.type,
+//             endTime: req.body.endTime,
+//             startTime: req.body.startTime,
+//             repeat: req.body.repeat,
+//           }
+//           )
+
+//           res.send(newEvent);
+//         }
+//     } catch (error) {
+//         res.status(500).json({message: error.message});
+//     }
+// });
 
 //for editing the established Day model with new events and removing certain events
 //this might be an inefficient way of doing things, as the entire data may need to be replaced every time

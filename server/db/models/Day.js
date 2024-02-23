@@ -13,10 +13,7 @@ const DaySchema = new Schema({
         type: String,
         required: true,
     },
-    // events: [EventSchema],
-    // food: [shortEventSchema],
-    // medication: [EventSchema],
-    // symptoms: [shortEventSchema],
+    events: [EventSchema],
     reflection: {
         body: {
             type: String,

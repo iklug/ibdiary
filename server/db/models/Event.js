@@ -20,10 +20,10 @@ const EventSchema = new Schema({
         type: String,
         default: 'undefined',
     },
-    day: {
-        type: Schema.Types.ObjectId,
-        required: true,
-    }  
+    // day: {
+    //     type: Schema.Types.ObjectId,
+    //     required: true,
+    // }  
 });
 
 // const shortEventSchema = new Schema({
@@ -39,7 +39,7 @@ const EventSchema = new Schema({
 //     },
 // });
 
-// module.exports.EventSchema = EventSchema;
+module.exports.EventSchema = EventSchema;
 // module.exports.shortEventSchema = shortEventSchema;
 
-module.exports = mongoose.model('Event', EventSchema);
+// module.exports = mongoose.model('Event', EventSchema);
