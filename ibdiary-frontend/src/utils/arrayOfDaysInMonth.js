@@ -21,7 +21,16 @@ const arrayOfDaysInMonth = (year, month) => {
      }
 
    
-    const totalDayArray = [...Array(totalDays).keys()].map(i => {return {year,month,day: i+1}});
+    const totalDayArray = [...Array(totalDays).keys()].map(i => {
+      let day;
+      if(i < 9){
+         day = `0` + (i+1);
+      }
+      else {
+         day = i+1;
+      }
+      return  {year,month, twoDigitMonth: `0${month+1}` ,twoDigitDay: day, day: i+1};
+    });
  
     return totalDayArray;
 }

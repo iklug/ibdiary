@@ -3,6 +3,7 @@ import Button from "../Button";
 import { useDispatch, useSelector } from "react-redux";
 import { clearEvent, updateTitle, updateDate, updateType, updateStart, updateEnd, selectNewEvent } from "../../redux/newEventSlice";
 import { selectToday } from "../../redux/dateSlice";
+import { addDay } from "../../redux/calendarSlice";
 
 const AddEvent = ({closeEvent}) => {
 
@@ -20,6 +21,11 @@ const AddEvent = ({closeEvent}) => {
         endTime: undefined,
         repeat: undefined,
     });
+
+    const dispatch = useDispatch();
+
+    const backend = import.meta.env.MODE === 'development' ?  `http://localhost:3000` : ''; 
+
 
     const handleMouseDown = (event) => {
         console.log('event target', event.currentTarget.parentElement);
@@ -40,15 +46,42 @@ const AddEvent = ({closeEvent}) => {
         setIsMoving(false);
     }
 
+    const submitEvent = async(backend, event) => {
+        try {
+            const request = await fetch(`${backend}/event`,{
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(event)
+            });
+            if(!request.ok){
+                throw new Error('request resulted in error @ submitEvent in AddEvent.jsx');
+            }
+            const data = await request.json();
+            dispatch(addDay({[newEventObj.date]:data}));
+            closeEvent();
+            console.log(data);
+
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
     return (
         <div className="absolute rounded-lg shadow-2xl h-96 w-96 left-1/4 top-1/4 bg-white overflow-hidden z-10">
-            <div className="h-8 bg-gray-100 cursor-move z-10 flex justify-end gap-3 items-center"
-            onMouseDown={handleMouseDown}
-            onMouseUp={handleMouseUp}
-            onMouseMove={handleMouseMove}
-            >
-                <div className="h-6 w-6 flex justify-center items-center rounded-full hover:bg-gray-200 mr-2 transition-colors duration-150 ease-in select-none text-sm cursor-default" onClick={closeEvent}>X</div>
-            </div>
+        
+                <div className="h-8 bg-gray-100 cursor-move z-10 flex justify-end gap-3 items-center"
+                onMouseDown={handleMouseDown}
+                onMouseUp={handleMouseUp}
+                onMouseMove={handleMouseMove}
+                >
+                </div>
+                <div className="h-6 w-6 flex justify-center items-center rounded-full hover:bg-gray-200 mr-2 transition-colors duration-150 ease-in text-sm cursor-default select-none float-right -mt-7" onClick={closeEvent}>X</div>
+        
             <div className="bg-white flex flex-col select-none appearance-none gap-4 ml-6 mt-6 h-72">
                 <input type="text" value={newEventObj.title}  className="border-b-2 border-blue-400 appearance-none focus:outline-none w-4/5" onChange={(e)=>setNewEventObj((prev)=>{return {...prev, title: e.target.value}})}/>
                 <div className="flex gap-2 mr-4">
@@ -77,7 +110,7 @@ const AddEvent = ({closeEvent}) => {
                
             </div>
             <div className="pr-2 w-full flex flex-1 justify-center items-end -mt-4">
-                <Button size={'med'} color={0} name={'Save'} handleClick={()=>console.log(newEventObj)}/>
+                <Button size={'med'} color={0} name={'Save'} handleClick={()=>submitEvent(backend, newEventObj)}/>
             </div>
         </div>
     )

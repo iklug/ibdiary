@@ -9,6 +9,7 @@ import {addToday, selectToday, addViewing, selectView} from './redux/dateSlice';
 import WeekView from './components/Calendar/WeekView';
 import { selectNewEvent, openNewEvent } from "./redux/newEventSlice";
 import AddEvent from './components/Calendar/AddEvent';
+import { selectCalendar } from './redux/calendarSlice';
 
 function App() {
 
@@ -39,8 +40,8 @@ if(!useSelector(selectToday)){
 const today = useSelector(selectToday);
 const view = useSelector(selectView);
 const newEvent = useSelector(selectNewEvent).open;
-
-
+const calendar = useSelector(selectCalendar);
+console.log('🥳🥳🥳🥳',calendar);
 
   return (
 

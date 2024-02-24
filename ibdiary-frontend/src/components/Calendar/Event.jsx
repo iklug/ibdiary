@@ -4,7 +4,7 @@ import EventDetails from "./EventDetails";
 const Event = ({title, type, startTime, endTime}) => {
 
 const [viewEvent, setViewEvent] = useState(false);
-console.log('pop up view: ',viewEvent);
+
 const colorObj = {
     'event': 'bg-blue-300',
     'food': 'bg-green-400',

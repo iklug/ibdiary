@@ -7,28 +7,31 @@ import { useRef } from "react";
 import arrangeByStartTime from "../../utils/arrangeByStartTime";
 
 
-const Day = ({day, month, year, hours}) => {    
+const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth}) => {    
 
-    const date = `${year}-${month}-${day}`;
+    const date = `${year}-${twoDigitMonth}-${twoDigitDay}`;
     const events = useSelector(selectCalendar);
     const todaysEvents = events[date] ? events[date] : null;
 
     const parentNode = useRef(null);
 
     const todayString = useSelector(selectToday).string;
-    const blueCircle = date === todayString ? 'border-2 border-blue-300 pl-2 pr-2 rounded-full' : '';
+    const blueCircle = `${year}-${month}-${day}` === todayString ? 'border-2 border-blue-300 pl-2 pr-2 rounded-full' : '';
     
     const today = new Date(year, month, day);
     const thisMonth = today.toLocaleString('default', {month: 'short'});
-     
-    const sortedEvents = arrangeByStartTime(todaysEvents);
-    console.log(sortedEvents)
+    let sortedEvents;
+    if(todaysEvents){
+      sortedEvents = arrangeByStartTime(todaysEvents);
+    }
     
     return (
-       <div className="border h-full w-full flex flex-col items-center pt-2 text-sm font-semibold select-none min-w-0 text-clip" id={`${year}-${month}-${day}`} onClick={(e)=>console.log(e.target.id)}>
+       <div className="border h-full w-full flex flex-col items-center pt-2 text-sm font-semibold select-none min-w-0 text-clip" id={`${year}-${twoDigitMonth}-${twoDigitDay}`} onClick={(e)=>console.log(e.target.id)}>
            <div className={`${blueCircle} hover:text-blue-400 text-center h-6 min-w-0`} id='open id in single view'>{ day === 1 ? `${thisMonth} ${day}` : `${day}` }</div>
 
-               <div className=" max-h-32 min-w-0 w-full relative">
+      {/* all the events need keys which will be event ids but i don't have them at the moment */}
+
+               {todaysEvents && <div className=" max-h-32 min-w-0 w-full relative">
                    <div className="flex-col items-start w-full" ref={parentNode}>
                       {(sortedEvents && window.innerHeight > 900) &&
                         sortedEvents.slice(0,7).map(x => <Event {...x} />)
@@ -60,7 +63,7 @@ const Day = ({day, month, year, hours}) => {
                     && (todaysEvents.events.length - parentNode.current.children.length + 1) + ' more'}</div>   
                     </div>
                    
-               </div>
+               </div>}
        </div>
             
             )

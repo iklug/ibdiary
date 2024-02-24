@@ -7,14 +7,22 @@ import DayOfTheWeek from "../DayOfTheWeek";
 import dayNames from "../../utils/dayNames";
 import { useSelector, useDispatch } from "react-redux";
 import { selectNewEvent, openNewEvent } from "../../redux/newEventSlice";
+import { addBulk } from "../../redux/calendarSlice";
 
 const MonthView = ({year, month, today}) => {
+
+
+const backend = import.meta.env.MODE === 'development' ?  `http://localhost:3000` : ''; 
 
 const [sixRows, setSixRows] = useState(null);
 const thisMonthDays = arrayOfDaysInMonth(year, month);
 const daysBefore = arrayOfDaysInMonth(year, month - 1);
 const nextMonthDays = arrayOfDaysInMonth(year, month + 1);
 const firstDay = findFirstDay(year, month);
+
+const trueMonth = thisMonthDays[0].twoDigitMonth;
+
+
 
 const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 const [windowHeight, setWindowHeight] = useState(window.innerHeight);
@@ -41,16 +49,47 @@ useEffect(() => {
   };
 }, []);
 
-console.log('😀😀😀😀😀😀', 'why does this refresh??')
 
 useEffect(()=>{
    thisMonthDays.length + firstDay > 35 ? setSixRows(true) : setSixRows(false); 
-}, [month])
+}, [month]);
+
+useEffect(()=> {
+   const getAllEvents = async() => {
+      try {
+          const request = await fetch(`${backend}/event/${year}/${trueMonth}`,{
+              method: 'GET',
+              credentials: 'include',
+              headers: {
+                  'Content-Type': 'application/json',
+              },
+          });
+          if(!request.ok){
+              throw new Error('request resulted in error @ submitEvent in AddEvent.jsx');
+          }
+          const data = await request.json();
+          console.log('🥶🥶🥶',data[0]);
+          const dataObject = {};
+         //  const dataReformat = data.map(x => { return {[x.date]: x}});
+         data.forEach(x => dataObject[x.date] = x);
+         console.log(dataObject);
+         //  console.log('🥵🥵🥵',dataReformat)
+           dispatch(addBulk(dataObject));
+
+
+      } catch (error) {
+          console.error(error);
+      }
+  }
+  getAllEvents();
+}, [])
+
+
 
 const dayArray = buildCalendar(thisMonthDays, firstDay, daysBefore, nextMonthDays, today);
 const dayArrayMap = dayArray.map(x => <Day {...x} key={`${x.year}-${x.month}-${x.day}`} />)
 
-console.log(window.innerHeight, window.innerWidth);
+// console.log(window.innerHeight, window.innerWidth);
 
     return (
         <div className={`flex flex-col monthCalSix text-gray-500`}>
