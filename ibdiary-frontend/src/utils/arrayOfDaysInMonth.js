@@ -29,7 +29,13 @@ const arrayOfDaysInMonth = (year, month) => {
       else {
          day = i+1;
       }
-      return  {year,month, twoDigitMonth: `0${month+1}` ,twoDigitDay: day, day: i+1};
+      let twoDigitMonth;
+      if(month > 8){
+         twoDigitMonth = month + 1;
+      } else {
+         twoDigitMonth = `0${month+1}`;
+      }
+      return  {year,month, twoDigitMonth ,twoDigitDay: day, day: i+1};
     });
  
     return totalDayArray;

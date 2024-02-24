@@ -7,12 +7,14 @@ import DayOfTheWeek from "../DayOfTheWeek";
 import dayNames from "../../utils/dayNames";
 import { useSelector, useDispatch } from "react-redux";
 import { selectNewEvent, openNewEvent } from "../../redux/newEventSlice";
-import { addBulk } from "../../redux/calendarSlice";
+import { addBulk, selectMonths, trackMonth } from "../../redux/calendarSlice";
 
 const MonthView = ({year, month, today}) => {
 
 
 const backend = import.meta.env.MODE === 'development' ?  `http://localhost:3000` : ''; 
+
+const dispatch = useDispatch();
 
 const [sixRows, setSixRows] = useState(null);
 const thisMonthDays = arrayOfDaysInMonth(year, month);
@@ -21,13 +23,12 @@ const nextMonthDays = arrayOfDaysInMonth(year, month + 1);
 const firstDay = findFirstDay(year, month);
 
 const trueMonth = thisMonthDays[0].twoDigitMonth;
-
-
+const monthsInState = useSelector(selectMonths);
+console.log(monthsInState);
 
 const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
-const dispatch = useDispatch();
 
 // Define a function to update window width in state
 const updateWindowWidth = () => {
@@ -57,6 +58,7 @@ useEffect(()=>{
 useEffect(()=> {
    const getAllEvents = async() => {
       try {
+        console.log('this is running another fetch request e very time');
           const request = await fetch(`${backend}/event/${year}/${trueMonth}`,{
               method: 'GET',
               credentials: 'include',
@@ -74,15 +76,19 @@ useEffect(()=> {
          data.forEach(x => dataObject[x.date] = x);
          console.log(dataObject);
          //  console.log('🥵🥵🥵',dataReformat)
-           dispatch(addBulk(dataObject));
-
+            dispatch(addBulk(dataObject));
+            if(!monthsInState.includes(`${trueMonth}-${year}`)){
+                dispatch(trackMonth(`${trueMonth}-${year}`))
+            }
 
       } catch (error) {
           console.error(error);
       }
   }
-  getAllEvents();
-}, [])
+  if(!monthsInState.includes(`${trueMonth}-${year}`)){
+      getAllEvents();
+  }
+}, [month])
 
 
 
