@@ -86,8 +86,9 @@ useEffect(()=> {
 
 
 
+
 const dayArray = buildCalendar(thisMonthDays, firstDay, daysBefore, nextMonthDays, today);
-const dayArrayMap = dayArray.map(x => <Day {...x} key={`${x.year}-${x.month}-${x.day}`} />)
+const dayArrayMap = dayArray.map(x => <Day {...x} key={`${x.year}-${x.month}-${x.day}`} dayId={x._id} />)
 
 // console.log(window.innerHeight, window.innerWidth);
 

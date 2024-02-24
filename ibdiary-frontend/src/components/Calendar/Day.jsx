@@ -7,12 +7,11 @@ import { useRef } from "react";
 import arrangeByStartTime from "../../utils/arrangeByStartTime";
 
 
-const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth}) => {    
+const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth, dayId}) => {    
 
     const date = `${year}-${twoDigitMonth}-${twoDigitDay}`;
     const events = useSelector(selectCalendar);
     const todaysEvents = events[date] ? events[date] : null;
-
     const parentNode = useRef(null);
 
     const todayString = useSelector(selectToday).string;
@@ -34,13 +33,13 @@ const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth}) => {
                {todaysEvents && <div className=" max-h-32 min-w-0 w-full relative">
                    <div className="flex-col items-start w-full" ref={parentNode}>
                       {(sortedEvents && window.innerHeight > 900) &&
-                        sortedEvents.slice(0,7).map(x => <Event {...x} />)
+                        sortedEvents.slice(0,7).map(x => <Event {...x} dayId={todaysEvents._id} key={x._id} />)
                       }
                       {(sortedEvents && window.innerHeight > 800 && window.innerHeight <= 900) &&
-                        sortedEvents.slice(0,6).map(x => <Event {...x} />)
+                        sortedEvents.slice(0,6).map(x => <Event {...x} dayId={todaysEvents._id} key={x._id} />)
                       }
                       {(sortedEvents && window.innerHeight > 700 && window.innerHeight <= 800) &&
-                        sortedEvents.slice(0,5).map(x => <Event {...x} />)
+                        sortedEvents.slice(0,5).map(x => <Event {...x} dayId={todaysEvents._id} key={x._id} />)
                       }
                       {
                         (sortedEvents && window.innerHeight > 600 && window.innerHeight <= 700) &&

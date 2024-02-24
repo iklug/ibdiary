@@ -15,11 +15,14 @@ export const calendarSlice = createSlice({
         },
         addBulk: (state,action) => {
             state.value = action.payload;
+        },
+        deleteDay: (state,action) => {
+            delete state.value[action.payload];
         }
     }
 });
 
-export const {addMonth, addDay, addBulk} = calendarSlice.actions;
+export const {addMonth, addDay, addBulk, deleteDay} = calendarSlice.actions;
 export const selectCalendar = (state) => state.calendar.value;
 export const selectDay = day => (state) => state.value[day];
 export default calendarSlice.reducer;
