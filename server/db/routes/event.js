@@ -165,9 +165,26 @@ router.put('/', async (req,res)=> {
 //hypothetically when deleting the last event of the day??
 //i don't know how it would make it know.. maybe it would stay and just be blank?
 //but if that happened for every day you would need to make fetch requests for essentially nothing.
-router.delete('/', async (req,res)=> {
+router.delete('/:day/:event', async (req,res)=> {
     try {
+      const dayId = req.params.day;
+      const eventId = req.params.event;
+      const day = await Day.findById(dayId);
+      const filtered = day.events.filter(x => x.id !== eventId );
+      if(filtered.length === 0){
+        const deleteDay = await Day.findByIdAndDelete(dayId);
+        res.json(deleteDay.date);
+      } else {
+        const update = {
+          events: filtered
+        };
         
+        const updateDay = await Day.findByIdAndUpdate(dayId, update,{new:true, runValidators: true});
+        res.json(updateDay);
+      }
+      
+      
+
     } catch (error) {
         res.status(500).json({message: error.message});
     }
