@@ -73,6 +73,22 @@ router.get('/:year/:month', async (req,res)=>{
     }
 });
 
+router.get('initial/:year/:month', async (req,res)=>{
+  const year = req.params.year;
+  const month = req.params.month;
+  const nextMonth = month === '12' ? '01' : month+1;
+  const previousMonth = month === '01' ? '12' : month-1;
+  const regexSearch = new RegExp(`^${year}-${month}-`);
+  console.log('is this being requested');
+  try {
+      const monthOfEvents = await Day.find({date: {$regex: regexSearch}});
+      //this could be 30 events .. and then the way i have it set up you'd have to do 30 searches to find groups of events
+      res.send(monthOfEvents);
+  } catch (error) {
+      res.status(500).json({message: error.message});
+  }
+});
+
 router.post('/', async (req,res)=> {
     try {
         const day = await Day.find({date: req.body.date});
