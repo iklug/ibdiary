@@ -1,13 +1,14 @@
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { addDay, deleteDay } from "../../redux/calendarSlice";
+import { selectCalendar } from "../../redux/calendarSlice";
+import fullDateFromString from "../../utils/fullDateFromString";
 
 
 
-
-const EventDetails = ({title, type, startTime, endTime, dayId, eventId, closeFunction}) => {
+const EventDetails = ({title, type, startTime, endTime, dayId, eventId, close, date, renderOn, edit, color}) => {
 
     const dispatch = useDispatch();
-
+    console.log(renderOn);
     const deleteEvent = async() => {
         try {
            const request = await fetch(`http://localhost:3000/event/${dayId}/${eventId}`,{
@@ -32,7 +33,6 @@ const EventDetails = ({title, type, startTime, endTime, dayId, eventId, closeFun
             dispatch(deleteDay(data));
            }
 
-           closeFunction();
         } catch (error) {
            console.error(error);
         }
@@ -40,21 +40,32 @@ const EventDetails = ({title, type, startTime, endTime, dayId, eventId, closeFun
 
      console.log(dayId, eventId);
 
+     const position = renderOn === 'left' ? 'right-[400px]' : 'left-[175px]';
+
     return (
-        <div className="text-gray-400 flex flex-col justify-start absolute -top-3 -left-96 h-48 w-96 bg-white rounded-md shadow-2xl">
+        <div className={`text-gray-400 flex flex-col justify-start relative -top-3 ${position} h-48 w-96 bg-white rounded-md shadow-2xl z-10`}>
             <div className=" h-8 flex justify-end items-center gap-6 pr-4 pt-2">
                 <div className="h-6 w-12 bg-gray-100 hover:shadow-sm flex justify-center items-center rounded-lg">
-                    <div className="">edit</div>
+                    <div className="" onClick={()=>edit()}>edit</div>
                 </div>
                 <div className="h-6 w-12 bg-gray-100 hover:shadow-md flex justify-center items-center rounded-lg">
                     <div className=" select-none" onClick={deleteEvent}>trash</div>
                 </div>
-                <div className="h-6 w-6 flex justify-center items-center bg-gray-50 shadow-sm hover:bg-gray-100 rounded-full" >
+                <div className="h-6 w-6 flex justify-center items-center bg-gray-50 shadow-sm hover:bg-gray-100 rounded-full" onClick={()=>close()}>
                     <div>X</div>
                 </div>
             </div>
-            <div>{title}</div>
-            <div>{startTime}-{endTime}</div>
+            <div>
+                <div className="flex items-center h-12 gap-2 ml-2">
+                    <div className={`${color} rounded-md h-3 w-3`}></div>
+                    <div className="text-gray-600 text-lg">{title}</div>
+                </div>
+                <div className="flex items-center h-6 gap-2 ml-2">
+                <div className={`rounded-md h-3 w-3`}></div>
+                    <div>{fullDateFromString(date)}</div>
+                    {startTime && <div>@ {startTime}</div>}
+                </div>
+            </div>
 
         </div>
     )

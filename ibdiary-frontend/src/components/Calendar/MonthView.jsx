@@ -7,7 +7,7 @@ import DayOfTheWeek from "../DayOfTheWeek";
 import dayNames from "../../utils/dayNames";
 import { useSelector, useDispatch } from "react-redux";
 import { selectNewEvent, openNewEvent } from "../../redux/newEventSlice";
-import { addBulk, selectMonths, trackMonth } from "../../redux/calendarSlice";
+import { addDay, selectMonths, trackMonth } from "../../redux/calendarSlice";
 
 const MonthView = ({year, month, today}) => {
 
@@ -24,7 +24,6 @@ const firstDay = findFirstDay(year, month);
 
 const trueMonth = thisMonthDays[0].twoDigitMonth;
 const monthsInState = useSelector(selectMonths);
-console.log(monthsInState);
 
 const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 const [windowHeight, setWindowHeight] = useState(window.innerHeight);
@@ -56,10 +55,10 @@ useEffect(()=>{
 }, [month]);
 
 useEffect(()=> {
-   const getAllEvents = async() => {
+   const getEvents = async() => {
       try {
         console.log('this is running another fetch request e very time');
-          const request = await fetch(`${backend}/event/${year}/${trueMonth}`,{
+          const request = await fetch(`${backend}/event/initial/${year}/${trueMonth}`,{
               method: 'GET',
               credentials: 'include',
               headers: {
@@ -70,13 +69,9 @@ useEffect(()=> {
               throw new Error('request resulted in error @ submitEvent in AddEvent.jsx');
           }
           const data = await request.json();
-          console.log('🥶🥶🥶',data[0]);
           const dataObject = {};
-         //  const dataReformat = data.map(x => { return {[x.date]: x}});
          data.forEach(x => dataObject[x.date] = x);
-         console.log(dataObject);
-         //  console.log('🥵🥵🥵',dataReformat)
-            dispatch(addBulk(dataObject));
+            dispatch(addDay(dataObject));
             if(!monthsInState.includes(`${trueMonth}-${year}`)){
                 dispatch(trackMonth(`${trueMonth}-${year}`))
             }
@@ -86,8 +81,9 @@ useEffect(()=> {
       }
   }
   if(!monthsInState.includes(`${trueMonth}-${year}`)){
-      getAllEvents();
+      getEvents();
   }
+  
 }, [month])
 
 
