@@ -5,6 +5,7 @@ import { selectAmountOfEvents, selectCalendar, selectDay } from "../../redux/cal
 import Event from './Event';
 import { useLayoutEffect, useRef, useEffect, useState, React } from "react";
 import arrangeByStartTime from "../../utils/arrangeByStartTime";
+import ViewAllEvents from "./ViewAllEvents";
 
 
 const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth, dayId}) => {    
@@ -12,17 +13,16 @@ const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth, dayId}) => {
     const date = `${year}-${twoDigitMonth}-${twoDigitDay}`;
     const events = useSelector(selectCalendar);
     const todaysEvents = events[date] ? events[date] : null;
-    const parentNode = useRef(null);
-    const childrenCount = useRef(null);
     const todayString = useSelector(selectToday).string;
     const blueCircle = `${year}-${month}-${day}` === todayString ? 'border-2 border-blue-300 pl-2 pr-2 rounded-full' : '';
     const today = new Date(year, month, day);
     const thisMonth = today.toLocaleString('default', {month: 'short'});
-    let sortedEvents;
-    if(todaysEvents){
-      sortedEvents = arrangeByStartTime(todaysEvents);
-    }
-    
+
+    const sortedEvents = todaysEvents ? arrangeByStartTime(todaysEvents) : null;
+    // if(todaysEvents){
+    //   sortedEvents = arrangeByStartTime(todaysEvents);
+    // }
+    const [viewAllEvents, setViewAllEvents] = useState(false);
     const [hiddenNumber, setHiddenNumber] = useState(0);
     
     if(window.innerHeight > 900 && hiddenNumber !== 7){
@@ -58,7 +58,7 @@ const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth, dayId}) => {
       {/* all the events need keys which will be event ids but i don't have them at the moment */}
 
                {todaysEvents && <div className=" max-h-32 min-w-0 w-full relative">
-                   <div className="flex-col items-start w-full" ref={parentNode}>
+                   <div className="flex-col items-start w-full">
                       {
                       (sortedEvents && hiddenNumber > 0) &&
                         sortedEvents.slice(0, hiddenNumber).map(x => <Event {...x} dayId={todaysEvents._id} date={date} key={x._id}/>)
@@ -66,8 +66,10 @@ const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth, dayId}) => {
 
                     {/* <div className=" font-bold text-xs pl-2 truncate">{(todaysEvents && parentNode.current && window.innerHeight > 350 && (todaysEvents.events.length !== parentNode.current.children.length - 1)) 
                     && (todaysEvents.events.length - parentNode.current.children.length + 1) + ' more'}</div>    */}
-                    {(todaysEvents.events.length > hiddenNumber && window.innerHeight > 325) && <div className="font-bold text-xs pl-2 truncate">{todaysEvents.events.length - hiddenNumber} more</div>}      
-              
+                    {(todaysEvents.events.length > hiddenNumber && window.innerHeight > 325) && <div className="font-bold text-xs pl-2 truncate relative" onClick={()=>setViewAllEvents(!viewAllEvents)}>{todaysEvents.events.length - hiddenNumber} more
+                      
+                    </div>}      
+                    {viewAllEvents && <ViewAllEvents events={todaysEvents.events} dayId={todaysEvents._id} date={date} close={()=>setViewAllEvents(!viewAllEvents)} thisMonth={thisMonth} day={day} />}
                     </div>
                    
                </div>}

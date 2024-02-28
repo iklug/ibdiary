@@ -10,6 +10,7 @@ import WeekView from './components/Calendar/WeekView';
 import { selectNewEvent, openNewEvent } from "./redux/newEventSlice";
 import AddEvent from './components/Calendar/AddEvent';
 import { selectCalendar } from './redux/calendarSlice';
+import Login from './pages/Login';
 
 function App() {
 
@@ -47,12 +48,13 @@ console.log('🥳🥳🥳🥳',calendar);
 
     // <Button size='small' color={color} name='submit' handleClick={handleClick} />
     <div>
-      <Banner />
+      {/* <Banner />
       <MonthView year={view.year} month={view.month} today={today.day} />
-      
+       */}
       {/* <WeekView year={view.year} month={view.month} today={today}/> */}
+       <Login />
     </div>
   ) 
 }
 
-export default App
+export default App;

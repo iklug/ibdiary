@@ -58,7 +58,7 @@ const EventDetails = ({title, type, startTime, endTime, dayId, eventId, close, d
             <div>
                 <div className="flex items-center h-12 gap-2 ml-2">
                     <div className={`${color} rounded-md h-3 w-3`}></div>
-                    <div className="text-gray-600 text-lg">{title}</div>
+                    <div className="text-gray-600 text-lg overflow-x-auto">{title}</div>
                 </div>
                 <div className="flex items-center h-6 gap-2 ml-2">
                 <div className={`rounded-md h-3 w-3`}></div>
