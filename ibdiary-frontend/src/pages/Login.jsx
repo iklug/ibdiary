@@ -33,8 +33,8 @@ const Login = () => {
     }
 
     return (
-        <div className=" h-screen border-4 border-red-400 flex justify-center items-center select-none">
-            <div className="h-[375px] w-[300px] flex flex-col gap-3 shadow-2xl rounded-lg p-4">
+        <div className=" h-screen border-4 flex justify-center items-center select-none">
+            <div className="h-[375px] w-[300px] flex flex-col gap-3 shadow-2xl shadow-gray-400 rounded-lg p-4">
                 <div className="mb-6 mt-2">
                     <div className="text-2xl font-bold text-gray-600">Login</div>
                     <div className="flex gap-2">

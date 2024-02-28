@@ -11,6 +11,8 @@ import { selectNewEvent, openNewEvent } from "./redux/newEventSlice";
 import AddEvent from './components/Calendar/AddEvent';
 import { selectCalendar } from './redux/calendarSlice';
 import Login from './pages/Login';
+import { Route, Routes } from 'react-router-dom';
+
 
 function App() {
 
@@ -48,11 +50,11 @@ console.log('🥳🥳🥳🥳',calendar);
 
     // <Button size='small' color={color} name='submit' handleClick={handleClick} />
     <div>
-      {/* <Banner />
-      <MonthView year={view.year} month={view.month} today={today.day} />
-       */}
-      {/* <WeekView year={view.year} month={view.month} today={today}/> */}
-       <Login />
+      <Routes>
+        <Route path='/login' element={<Login/>}></Route>
+        <Route path='/' element={<div><Banner/><MonthView year={view.year} month={view.month} today={today.day} /></div>}/>
+      </Routes>
+     
     </div>
   ) 
 }
