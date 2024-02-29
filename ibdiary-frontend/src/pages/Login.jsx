@@ -9,14 +9,14 @@ const Login = () => {
     
     const submitLogin = async() => {
         try {
-            const request = await fetch('http://localhost:3000/login', {
+            const request = await fetch('http://localhost:3000/auth/login', {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
-                    'Content-Type': 'application/json'
+                    'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({
-                    username: username,
+                    email: email,
                     password: password,
                 }),
             });
@@ -53,7 +53,7 @@ const Login = () => {
                     <input className="outline-none p-1 rounded-sm border-gray-200 border focus:border-purple-300 w-full" type="password" value={password} onChange={(e)=>setPassword(e.target.value)} />
                 </div>
                 <div className="flex justify-center mt-6">
-                    <button className="h-12 w-full bg-purple-500 text-gray-50 rounded-md hover:bg-purple-700 transition-colors duration-150">Login</button>
+                    <button className="h-12 w-full bg-purple-500 text-gray-50 rounded-md hover:bg-purple-700 transition-colors duration-150" onClick={()=>submitLogin()}>Login</button>
                 </div>
             </div>
         </div>
