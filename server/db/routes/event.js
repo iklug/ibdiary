@@ -15,7 +15,7 @@ router.get('/:year/:month', async (req,res)=>{
     const regexSearch = new RegExp(`^${year}-${month}-`);
     console.log('is this being requested');
     try {
-        const monthOfEvents = await Day.find({date: {$regex: regexSearch}});
+        const monthOfEvents = await Day.find({date: {$regex: regexSearch}, user: req.user._id});
         //this could be 30 events .. and then the way i have it set up you'd have to do 30 searches to find groups of events
         res.send(monthOfEvents);
     } catch (error) {
@@ -34,9 +34,9 @@ router.get('/initial/:year/:month', async (req,res)=>{
   const after = new RegExp(monthAndYearAfter(year, month));
   console.log(before, after);
   try {
-      const previousMonth = await Day.find({date: {$regex: before}});
-      const currentMonth = await Day.find({date: {$regex: regexSearch}});
-      const nextMonth = await Day.find({date: {$regex: after}});
+      const previousMonth = await Day.find({date: {$regex: before}, user: req.user._id });
+      const currentMonth = await Day.find({date: {$regex: regexSearch}, user: req.user._id});
+      const nextMonth = await Day.find({date: {$regex: after}, user: req.user._id});
       //this could be 30 events .. and then the way i have it set up you'd have to do 30 searches to find groups of events
       const allEvents = [...previousMonth, ...currentMonth, ...nextMonth];
 
@@ -45,6 +45,7 @@ router.get('/initial/:year/:month', async (req,res)=>{
       res.status(500).json({message: error.message});
   }
 });
+
 router.get('/next/:year/:month', async (req,res)=>{
   console.log('running initial calendar get @ event.js');
 
@@ -66,7 +67,7 @@ router.get('/next/:year/:month', async (req,res)=>{
 
 router.post('/', async (req,res)=> {
     try {
-        const day = await Day.find({date: req.body.date});
+        const day = await Day.find({date: req.body.date, user: req.user._id});
 
         if(day.length > 0){
           const update = {$push: { events:{
@@ -83,7 +84,7 @@ router.post('/', async (req,res)=> {
         if(day.length === 0){
           const newDay = await Day.create({
             date: req.body.date,
-            user: 'user',
+            user: req.user._id,
             events: [
               {
                 title: req.body.title,
@@ -102,49 +103,7 @@ router.post('/', async (req,res)=> {
         res.status(500).json({message: error.message});
     }
 });
-// router.post('/', async (req,res)=> {
-//     try {
-//         const day = await Day.find({date: req.body.date});
 
-//         if(day.length > 0){
-//           const event = await Event.create({
-//             day: day[0]._id,
-//             title: req.body.title,
-//             type: req.body.type,
-//             startTime: req.body.startTime,
-//             endTime: req.body.endTime,
-//             repeat: req.body.repeat,
-//           });
-
-//           res.send(event);
-//         }
-//         if(day.length === 0){
-//           const newDay = await Day.create({
-//             date: req.body.date,
-//             user: 'user',
-//           });
-//           console.log(newDay);
-//           const newEvent = await Event.create(
-//             {
-//               day: newDay._id,
-//             title: req.body.title,
-//             type: req.body.type,
-//             endTime: req.body.endTime,
-//             startTime: req.body.startTime,
-//             repeat: req.body.repeat,
-//           }
-//           )
-
-//           res.send(newEvent);
-//         }
-//     } catch (error) {
-//         res.status(500).json({message: error.message});
-//     }
-// });
-
-//for editing the established Day model with new events and removing certain events
-//this might be an inefficient way of doing things, as the entire data may need to be replaced every time
-//look into the mongoose findOneAndUpdate method -- might be what i'm looking for
 router.put('/:eventId', async (req,res)=> {
     try {
       const eventId = req.params.eventId;
@@ -159,23 +118,23 @@ router.put('/:eventId', async (req,res)=> {
         date: req.body.newDate
   };
 
-  const initialDay = await Day.findOneAndUpdate({date: req.body.originalDate}, {$pull: {events: {_id: convertTypeId}}}, {new:true, runValidators: true});
+  const initialDay = await Day.findOneAndUpdate({date: req.body.originalDate, user: req.user._id}, {$pull: {events: {_id: convertTypeId}}}, {new:true, runValidators: true});
       if(req.body.originalDate !== req.body.newDate){
         if(initialDay.events.length === 0){
-        const deleteDay = await Day.deleteOne({date: req.body.originalDate});
+        const deleteDay = await Day.deleteOne({date: req.body.originalDate, user: req.user._id});
         }
-        const newDay = await Day.find({date: req.body.newDate});
+        const newDay = await Day.find({date: req.body.newDate, user: req.user._id});
         if(newDay.length === 0){
-          const makeDay = await Day.create({date: req.body.newDate, user: 'user', events: [updatedEvent]});
+          const makeDay = await Day.create({date: req.body.newDate, user: req.user._id, events: [updatedEvent]});
           console.log('makeDay', makeDay);
           res.json(makeDay);
         } else {
-          const updatedDay = await Day.findOneAndUpdate({date: updatedEvent.date}, {$push: {events: updatedEvent}}, {new:true, runValidators: true});
+          const updatedDay = await Day.findOneAndUpdate({date: updatedEvent.date, user: req.user._id}, {$push: {events: updatedEvent}}, {new:true, runValidators: true});
           res.json(updatedDay);
         }
 
         } else {
-        const day = await Day.findOneAndUpdate({date: updatedEvent.date}, {$push: {events: updatedEvent}}, {new:true, runValidators: true});
+        const day = await Day.findOneAndUpdate({date: updatedEvent.date, user: req.user._id}, {$push: {events: updatedEvent}}, {new:true, runValidators: true});
         res.json(day);
       }
       // const day = await Day.find({date: req.body.originalDate});

@@ -4,6 +4,14 @@ const session = require('express-session');
 const connectToDatabase = require('./db/db.js');
 const routes = require('./db/routes/index');
 const cors = require('cors');
+const passport = require('passport');
+const MongoDBStore = require('connect-mongodb-session')(session);
+const cookieParser = require('cookie-parser');
+const User = require('./db/models/User'); 
+
+const generatePassword = require('./lib/passwordUtils.js').generatePassword;
+
+
 
 require("dotenv").config();
 
@@ -11,7 +19,11 @@ require("dotenv").config();
 
 
 const app = express();
+
+
 const PORT = 3000;
+
+const connection = mongoose.connect(process.env.DB_SECRET_KEY);
 
 app.use(cors({
     origin: function (origin, callback) {
@@ -34,13 +46,50 @@ app.use(cors({
 connectToDatabase();
 
 app.use(express.json());
+app.use(express.urlencoded({extended:true}));
+app.use(cookieParser());
+const sessionStore = new MongoDBStore({
+  uri: process.env.DB_SECRET_KEY,
+  mongooseConnection: connection,
+  collection: 'sessions',
+});
+sessionStore.on('error', (error)=>console.log(error));
+app.enable('trust proxy');
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: true,
+  proxy: true,
+  store: sessionStore,
+  cookie: {
+    maxAge: 1000 * 60 * 60 * 24,
+    // secure: true,
+    // sameSite: 'none',
+  },
+}));
+
+require('./config/passport.js');
+app.use(passport.initialize());
+app.use(passport.session());
+
+//for testing req.session and req.user
+app.use((req,res,next)=>{
+  console.log('req.session: ', req.session); //should be created by express session
+  console.log('req.user: ', req.user); // should be created by passport middleware
+  next();
+})
 
 app.use('/user', routes.user);
 app.use('/event', routes.event);
+app.use('/auth', routes.auth);
 
-app.get('/', (req,res,next)=>{
-    res.send('server is up on port 3000');
-})
 
+function errorHandler(error,req,res,next){
+  if(error){
+    res.json(error);
+  }
+}
+
+app.use(errorHandler);
 
 app.listen(PORT, ()=>console.log(`listening on port ${PORT}`));
