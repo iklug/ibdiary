@@ -7,11 +7,23 @@ const router = Router();
 //replace when you get to routes
 router.get('/', async (req,res)=>{
     try {
-        const user = await User.create({email: "email@email.com"});
-        res.send('user created successfully');
+        const user = await User.findById(req.user._id);
+        res.json(user);
     } catch (error) {
         res.status(500).json({message: error.message});
     }
 });
+
+router.post('/:type', async(req,res)=>{
+    console.log('req.body -- ',req.body);
+    try {
+        const type = req.params.type;
+        const update = {$set: {[type]: req.body}};
+        const user = await User.findOneAndUpdate({_id: req.user._id}, update, {new:true, runValidators: true});
+        res.json(user);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+})
 
 module.exports = router;

@@ -10,6 +10,7 @@ passport.use(
         passwordField: 'password'
     },async (email, password, done)=>{
         console.log('now in Local Strategy @ config/passport');
+        
         try {
             //make sure the email and password match
             const user = await User.findOne({email});

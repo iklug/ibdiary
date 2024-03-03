@@ -15,52 +15,71 @@ const UserSchema = new Schema({
     personal: {
         firstName: {
             type: String,
+            default: '',
         },
         lastName: {
             type: String,
+            default: '',
         },
         preferredName: {
             type: String,
+            default: '',
+        },
+        gender: {
+            type: String,
+            default: '',
         },
         pronouns: {
             type: String,
+            default: '',
         },
         birthday: {
-            type: Date,
+            type: String,
+            default: '',
         }
     },
     medical: {
         diagnosis: {
             type: String,
+            default: '',
         },
         yearOfDiagnosis: {
             type: String,
+            default: '',
         },
         currentMedication: {
-            type: Array,
+            type: String,
+            default: '',
         },
         pastMedication: {
-            type: Array,
+            type: String,
+            default: '',
         },
         primaryPhysician: {
             type: String,
+            default: '',
         },
         primaryGastro: {
             type: String,
+            default: '',
         },
         allergies: {
-            type: Array,
+            type: String,
+            default: '',
         }
     },
     preferences: {
         color: {
             type: String,
+            default: 'blue',
         },
         darkMode: {
             type: Boolean,
+            default: false,
         },
         '24hourClock': {
             type: Boolean,
+            default: true,
         }
     }
 });

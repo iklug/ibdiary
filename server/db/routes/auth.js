@@ -7,8 +7,18 @@ const passport = require('passport');
 const {checkAuth, checkNoAuth} = require('../../lib/authMiddleware');
 
 
-router.post('/login', checkNoAuth, passport.authenticate('local'), (req,res,next)=>{
-    res.json(req.user.email);
+router.post('/login', checkNoAuth, passport.authenticate('local'), async(req,res,next)=>{
+    
+    const user = await User.findById(req.user._id);
+    const userInfo = {
+        id: user._id,
+        medical: user.medical,
+        personal: user.personal,
+        email: user.email,
+        preferences: user.preferences,
+    }
+
+    res.json(userInfo);
 });
 
 

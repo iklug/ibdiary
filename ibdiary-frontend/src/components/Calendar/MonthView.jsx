@@ -8,6 +8,8 @@ import dayNames from "../../utils/dayNames";
 import { useSelector, useDispatch } from "react-redux";
 import { selectNewEvent, openNewEvent } from "../../redux/newEventSlice";
 import { addDay, selectMonths, trackMonth } from "../../redux/calendarSlice";
+import { getUser, selectUser } from "../../redux/profileSlice";
+
 
 const MonthView = ({year, month, today}) => {
 
@@ -24,7 +26,7 @@ const firstDay = findFirstDay(year, month);
 
 const trueMonth = thisMonthDays[0].twoDigitMonth;
 const monthsInState = useSelector(selectMonths);
-
+const currentUser = useSelector(selectUser);
 const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
@@ -66,7 +68,7 @@ useEffect(()=> {
               },
           });
           if(!request.ok){
-              throw new Error('request resulted in error @ submitEvent in AddEvent.jsx');
+              throw new Error('request resulted in error @ getEvents in MonthView.jsx');
           }
           const data = await request.json();
           const dataObject = {};
@@ -80,11 +82,37 @@ useEffect(()=> {
           console.error(error);
       }
   }
+  
   if(!monthsInState.includes(`${trueMonth}-${year}`)){
       getEvents();
   }
   
 }, [month])
+
+useEffect(()=>{
+    console.log('is this running on refresh');
+    const updateUser = async() => {
+        try {
+            const request = await fetch('http://localhost:3000/user', {
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+            });
+            if(!request.ok){
+                throw new Error('failed to fetch user @ getUser in MonthView.jsx')
+            }
+            const data = await request.json();
+            console.log(data);
+            dispatch(getUser(data));
+        } catch (error) {
+            console.error(error);
+        }
+      }
+
+    updateUser();
+
+}, []);
 
 
 

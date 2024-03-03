@@ -1,11 +1,17 @@
 import { useState } from "react";
-
+import {useDispatch} from 'react-redux'
+import { getUser } from "../redux/profileSlice";
+import {useNavigate} from 'react-router-dom';
 
 
 const Login = () => {
 
+
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [loggedIn, setLoggedIn] = useState(false);
     
     const submitLogin = async() => {
         try {
@@ -25,11 +31,15 @@ const Login = () => {
             }
     
             const data = await request.json();
-            console.log(data);
-            
+            dispatch(getUser(data));
+            setLoggedIn(true);
         } catch (error) {
             console.error(error);
         }
+    }
+
+    if(loggedIn){
+        navigate('/');
     }
 
     return (
