@@ -6,6 +6,9 @@ const monthAndYearBefore = require('../../utils/monthsBeforeAndAfter').monthAndY
 const monthAndYearAfter = require('../../utils/monthsBeforeAndAfter').monthAndYearAfter;
 const mongoose = require('mongoose');
 const {checkAuth, checkNoAuth} = require('../../lib/authMiddleware');
+const printDates = require('../../utils/generateDates');
+const RepeatingEvent = require('../models/RepeatingEvent');
+
 
 
 //this is just a place holder to make sure the DB is up and running
@@ -149,6 +152,39 @@ router.put('/:eventId', async (req,res)=> {
         res.status(500).json({message: error.message});
     }
 });
+
+router.post('/repeating', checkAuth, async(req,res)=>{
+  try {
+    
+    const futureDates = printDates(req.body.repeat, req.body.date);
+
+    const repeatingEvent = {
+      title: req.body.title,
+      type: req.body.type,
+      startTime: req.body.startTime,
+      endTime: req.body.endTime,
+      repeat: req.body.repeat,
+      _id: req.body._id,
+      dates: futureDates,
+    };
+
+    const  newRepeatEvent = await RepeatingEvent.create({repeatingEvent});
+
+    for(const date of futureDates){
+      const newDay = await Day.findOne({date: date, user: req.user._id});
+      if(newDay.length > 0){
+        const updateDay = await Day.findOneAndUpdate({_id: newDay[0]._id}, {$push: {repeatingEvents: newRepeatEvent._id}}, {new:true, runValidators: true});
+      } else {
+        const createDay = await Day.create({date: date, user: req.user._id, repeatingEvents: [newRepeatEvent._id]});
+      }
+    }
+    req.json('i dunno, check the db');
+  } catch (error) {
+    console.error(error);
+    res.json(error);
+  }
+})
+
 
 router.post('/reflection', checkAuth, async(req,res)=>{
  try {
