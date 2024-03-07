@@ -14,6 +14,7 @@ const AddEvent = ({closeEvent=(()=>console.log('')), defaultDate, reflection=fal
     const [offsetX, setOffsetX] = useState(0);
     const [offsetY, setOffsetY] = useState(0);
     const [startTime, setStartTime] = useState(false);
+    const [endTime, setEndTime] = useState(false);
     const [viewReflection, setViewReflection] = useState(reflection);
 
     const [newEventObj, setNewEventObj] = useState({
@@ -103,8 +104,13 @@ const AddEvent = ({closeEvent=(()=>console.log('')), defaultDate, reflection=fal
                 </div>
                 <input type="date" className="focus:outline-none w-32" value={newEventObj.date} onChange={(e)=>setNewEventObj(prev => { return {...prev, date:e.target.value}})} />
                 <div>
-                    {!startTime && <div className="h-6 w-16 border" onClick={()=>setStartTime(true)}>set time</div>}
-                    {startTime && <input type="time" value={newEventObj.startTime} className="w-28" onChange={(e)=>setNewEventObj(prev => {return {...prev, startTime: e.target.value}})} name="startTime"/>}
+                    {!startTime && <div className="h-6 w-24 border rounded-lg flex justify-center items-center" onClick={()=>setStartTime(true)}>set time</div>}
+                    {startTime && <div className="flex gap-4">
+                        <input type="time" value={newEventObj.startTime} className="w-28" onChange={(e)=>setNewEventObj(prev => {return {...prev, startTime: e.target.value}})} name="startTime"/>
+                         {!endTime && <div className="h-6 w-32 border rounded-lg flex justify-center items-center" onClick={()=>setEndTime(true)}>set end time</div>}
+                         {endTime && <input type="time" value={newEventObj.endTime} className="w-28" onChange={(e)=>setNewEventObj(prev => {return {...prev, endTime: e.target.value}})} name="startTime"/>}
+
+                    </div>}
                 </div>
                 {(newEventObj.type === 'event' || newEventObj.type === 'medication') &&<div>
                     <select name="repeat" id="repeat" value={newEventObj.repeat} onChange={(e)=>setNewEventObj(prev => {return {...prev, repeat: e.target.value}})}>

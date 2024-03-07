@@ -25,7 +25,7 @@ const EventDetails = ({title, type, startTime, endTime, dayId, eventId, close, d
                  throw new Error('this delete thing is so not okay');
               }
            const data = await request.json();
-           
+
             const updateEvents = {
                 [data.date]: {
                     ...data
@@ -63,7 +63,11 @@ const EventDetails = ({title, type, startTime, endTime, dayId, eventId, close, d
                 <div className="flex items-center h-6 gap-2 ml-2">
                 <div className={`rounded-md h-3 w-3`}></div>
                     <div>{fullDateFromString(date)}</div>
-                    {startTime && <div>@ {startTime}</div>}
+                    {startTime && <div className='flex gap-2'>
+                        <div>@ {startTime}</div>
+                    {endTime && <div>-</div>}
+                    {endTime && <div>{`${endTime}`}</div>}
+                    </div>}
                 </div>
             </div>
 

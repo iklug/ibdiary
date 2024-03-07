@@ -20,6 +20,7 @@ const EditEventDetails = ({title, type, startTime, endTime, repeat, dayId, event
         repeat: repeat,
         _id: eventId,
     });
+    const [addEndTime, setAddEndTime] = useState(endTime);
 
 
     const backend = import.meta.env.MODE === 'development' ?  `http://localhost:3000` : ''; 
@@ -63,10 +64,28 @@ const EditEventDetails = ({title, type, startTime, endTime, repeat, dayId, event
 
                     <input type="text" className="text-lg font-semibold appearance-none text-gray-600 outline-none border p-1 focus:border-blue-200" value={newEventObj.title} onChange={(e)=>setNewEventObj(prev => {return {...prev, title: e.target.value}})} />
                 </div>
-                <div className="flex items-center h-6 gap-2 ml-2">
+                <div className="flex flex-col h-14 gap-2 ml-2">
                 <div className={`rounded-md h-3 w-3`}></div>
                 <input type="date" className="focus:outline-none w-32" value={newEventObj.newDate} onChange={(e)=>setNewEventObj(prev => { return {...prev, newDate:e.target.value}})} />
-                    {startTime && <input type="time" value={newEventObj.startTime} className="w-28" onChange={(e)=>setNewEventObj(prev => {return {...prev, startTime: e.target.value}})} name="startTime"/>}
+                    <div className="flex gap-2 items-center ">{startTime && <input type="time" value={newEventObj.startTime} className="w-28" onChange={(e)=>setNewEventObj(prev => {return {...prev, startTime: e.target.value}})} name="startTime"/>}
+                        
+                        {!addEndTime && 
+                        <div className="h-6 w-32 rounded-lg border-gray-100 border flex justify-center" onClick={()=>setAddEndTime(true)}>
+                            add end time    
+                        </div>
+                        }
+                        {(endTime || addEndTime) &&
+                        <div className="flex gap-2">
+                            <div>
+                                -
+                            </div>
+                            <div>
+                            <input type="time" value={newEventObj.endTime} className="w-28" onChange={(e)=>setNewEventObj(prev => {return {...prev, endTime: e.target.value}})} name="endTime"/>
+                            </div>
+                        </div>
+
+                        }
+                    </div>
                 </div>
             </div>
                 <div className="flex items-end justify-center h-28 m-2">
