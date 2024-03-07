@@ -5,11 +5,12 @@ const router = Router();
 const monthAndYearBefore = require('../../utils/monthsBeforeAndAfter').monthAndYearBefore;
 const monthAndYearAfter = require('../../utils/monthsBeforeAndAfter').monthAndYearAfter;
 const mongoose = require('mongoose');
+const {checkAuth, checkNoAuth} = require('../../lib/authMiddleware');
 
 
 //this is just a place holder to make sure the DB is up and running
 //replace when you get to routes
-router.get('/:year/:month', async (req,res)=>{
+router.get('/:year/:month',checkAuth, async (req,res)=>{
     const year = req.params.year;
     const month = req.params.month;
     const regexSearch = new RegExp(`^${year}-${month}-`);
@@ -23,7 +24,7 @@ router.get('/:year/:month', async (req,res)=>{
     }
 });
 
-router.get('/initial/:year/:month', async (req,res)=>{
+router.get('/initial/:year/:month', checkAuth, async (req,res)=>{
   console.log('running initial calendar get @ event.js');
 
   const year = req.params.year;
@@ -65,7 +66,7 @@ router.get('/next/:year/:month', async (req,res)=>{
   }
 });
 
-router.post('/', async (req,res)=> {
+router.post('/', checkAuth, async (req,res)=> {
     try {
         const day = await Day.find({date: req.body.date, user: req.user._id});
 
@@ -149,24 +150,61 @@ router.put('/:eventId', async (req,res)=> {
     }
 });
 
+router.post('/reflection', checkAuth, async(req,res)=>{
+ try {
+
+   const update = {
+     body: req.body.body,
+     stress: req.body.stress,
+     emotion: req.body.emotions,
+     edited: true,
+   };
+   console.log('information sent from user',update);
+   const dayExists = await Day.findOne({date: req.body.date, user: req.user._id});
+   console.log('in reflection post', dayExists);
+   if(dayExists){
+     const updatedDay = await Day.findOneAndUpdate({_id: dayExists._id}, {$set:{ reflection: update}}, {new:true, runValidators: true});
+     console.log('this is supposed to be the updated Day: ',updatedDay);
+     res.json(updatedDay);
+   } else {
+    console.log('this isnt happening though')
+   const createDay = await Day.create({
+    date: req.body.date,
+    user: req.user._id,
+    events: [],
+    reflection: {
+      ...update
+    }});
+   res.json(createDay);
+  }
+ } catch (error) {
+  console.error(error);
+  res.json({message: error});
+ }
+ 
+
+})
+
+
 //hypothetically when deleting the last event of the day??
 //i don't know how it would make it know.. maybe it would stay and just be blank?
 //but if that happened for every day you would need to make fetch requests for essentially nothing.
-router.delete('/:day/:event', async (req,res)=> {
+router.delete('/:event', checkAuth, async (req,res)=> {
     try {
-      const dayId = req.params.day;
+      // const dayId = req.params.day;
       const eventId = req.params.event;
-      const day = await Day.findById(dayId);
+      const date = req.body.date;
+      const day = await Day.findOne({date: date, user: req.user._id});
       const filtered = day.events.filter(x => x.id !== eventId );
       if(filtered.length === 0){
-        const deleteDay = await Day.findByIdAndDelete(dayId);
+        const deleteDay = await Day.findByIdAndDelete(day[0]._id);
         res.json(deleteDay.date);
       } else {
         const update = {
           events: filtered
         };
         
-        const updateDay = await Day.findByIdAndUpdate(dayId, update,{new:true, runValidators: true});
+        const updateDay = await Day.findByIdAndUpdate(day[0]._id, update,{new:true, runValidators: true});
         res.json(updateDay);
       }
       

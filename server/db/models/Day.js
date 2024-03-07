@@ -17,12 +17,19 @@ const DaySchema = new Schema({
     reflection: {
         body: {
             type: String,
+            default: '',
         },
         stress: {
             type: Number,
+            default: null,
         },
         emotion: {
             type: String,
+            default: '',
+        },
+        edited: {
+            type: Boolean,
+            defaulted: false,
         }
     },
 

@@ -22,7 +22,7 @@ router.post('/login', checkNoAuth, passport.authenticate('local'), async(req,res
 });
 
 
-router.post('/signup', async(req,res, next)=>{
+router.post('/signup', checkNoAuth, async(req,res, next)=>{
     const saltHash = generatePassword(req.body.password);
     const salt = saltHash.salt;
     const hash = saltHash.hash;
