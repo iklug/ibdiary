@@ -11,12 +11,15 @@ const EventDetails = ({title, type, startTime, endTime, dayId, eventId, close, d
     console.log(renderOn);
     const deleteEvent = async() => {
         try {
-           const request = await fetch(`http://localhost:3000/event/${dayId}/${eventId}`,{
+           const request = await fetch(`http://localhost:3000/event/${eventId}`,{
               method: 'DELETE',
               credentials: 'include',
               headers: {
                  'Content-Type': 'application/json',
-              }
+              },
+              body: JSON.stringify({
+                date: date,
+              })
            });
               if(!request.ok){
                  throw new Error('this delete thing is so not okay');
@@ -38,7 +41,6 @@ const EventDetails = ({title, type, startTime, endTime, dayId, eventId, close, d
         }
      };
 
-     console.log(dayId, eventId);
 
      const position = renderOn === 'left' ? 'right-[400px]' : 'left-[175px]';
 

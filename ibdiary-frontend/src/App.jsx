@@ -12,6 +12,7 @@ import AddEvent from './components/Calendar/AddEvent';
 import { selectCalendar } from './redux/calendarSlice';
 import Login from './pages/Login';
 import { Route, Routes } from 'react-router-dom';
+import Signup from './pages/Signup';
 
 
 function App() {
@@ -52,6 +53,7 @@ console.log('🥳🥳🥳🥳',calendar);
     <div>
       <Routes>
         <Route path='/login' element={<Login/>}></Route>
+        <Route path='/signup' element={<Signup/>}></Route>
         <Route path='/' element={<div><Banner/><MonthView year={view.year} month={view.month} today={today.day} /></div>}/>
       </Routes>
      

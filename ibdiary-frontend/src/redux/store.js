@@ -3,6 +3,7 @@ import profileReducer from "./profileSlice";
 import calendarReducer from "./calendarSlice";
 import dateReducer from "./dateSlice";
 import newEventReducer from './newEventSlice';
+import repeatEventReducer from './repeatEventSlice';
 
 export default configureStore({
     reducer: {
@@ -10,5 +11,6 @@ export default configureStore({
         calendar: calendarReducer,
         date: dateReducer,
         newEvent: newEventReducer,
+        repeatEvents: repeatEventReducer,
     }
 })

@@ -28,11 +28,15 @@ export const calendarSlice = createSlice({
             
             // state.value[action.payload.date].events.filter(event => event._id !== action.payload.id);
             state.value[action.payload.date].events = state.value[action.payload.date].events.filter(event => event._id !== action.payload.id);
+        },
+        replaceState: (state, action) => {
+            state.months = [];
+            state.value = {};
         }
     }
 });
 
-export const {addMonth, addDay, addBulk, deleteDay, trackMonth, removeEvent} = calendarSlice.actions;
+export const {addMonth, addDay, addBulk, deleteDay, trackMonth, removeEvent, replaceState} = calendarSlice.actions;
 export const selectCalendar = (state) => state.calendar.value;
 export const selectDay = day => (state) => state.value[day];
 export const selectMonths = (state) => state.calendar.months;

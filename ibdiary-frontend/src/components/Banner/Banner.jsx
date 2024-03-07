@@ -34,7 +34,7 @@ const changeView = (e) => {
 
     return (
         <div className="h-16 min-w-60 pl-3 pr-3 flex justify-between items-center shadow-sm">
-            {newEvent && <AddEvent closeEvent={()=>setNewEvent(false)}/>}
+            {/* {newEvent && <AddEvent closeEvent={()=>setNewEvent(false)}/>} */}
             <div className=" w-96 flex items-center justify-between">
                 < BannerLogo />
                 <div className="flex items-center gap-4 min-w-60 pr-4">
@@ -47,7 +47,7 @@ const changeView = (e) => {
                 </div>
             </div>
             <div className="flex gap-4 items-center">
-                <CreateEvent clickFunction={()=>setNewEvent(!newEvent)}/>
+                <CreateEvent clickFunction={()=>setNewEvent(!newEvent)} newEvent={newEvent}/>
                 <div id='viewMenu'>
                     <BannerButton name={view} clickFunction={()=>setViewDropdown(!viewDropdown)}/>
                     {viewDropdown && <CalendarViewDropdown changeView={changeView}/>}

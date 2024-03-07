@@ -1,10 +1,11 @@
 import { useState } from "react";
 import buttonColor from "../../utils/buttonColor";
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 import { selectUser } from "../../redux/profileSlice";
 import { useNavigate } from "react-router-dom";
 import ProfileDropdown from "../Profile/ProfileDropdown";
 import ProfileDropdownFull from "../Profile/ProfileDropdownFull";
+import { replaceState } from "../../redux/calendarSlice";
 
 const BannerProfile = ({color, firstInitial, showDropdown}) => {
     
@@ -13,6 +14,8 @@ const [selected, setSelected] = useState('Personal');
 const [viewProfile, setViewProfile] = useState(false);
 const [loggedOut, setLoggedOut] = useState(false);
 const navigate = useNavigate();
+
+const dispatch = useDispatch();
 
 const currentUser = useSelector(selectUser);
 console.log('currentUser: ',currentUser);
@@ -34,7 +37,10 @@ const logout = async() => {
         }
         const data = await request.json();
         console.log(data);
+
         setLoggedOut(true);
+        dispatch(replaceState());
+        console.log('replaced state?')
 
     } catch (error) {
         console.error(error);

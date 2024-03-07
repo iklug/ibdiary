@@ -21,8 +21,8 @@ export const newEventSlice = createSlice({
             startTime: null,
             endTime: null,
             repeat: null,
-            open: false,
-        }
+        },
+        isOpen: false,
      },
     reducers: {
         clearEvent: (state) => {
@@ -47,13 +47,16 @@ export const newEventSlice = createSlice({
             state.value.repeat = action.payload;
         },
         openNewEvent: (state) => {
-            state.value.open = true;
+            state.isOpen = true;
         },
+        closeNewEvent: (state) => {
+            state.isOpen = false;
+        }
     },
 }
 );
 
-export const {updateDate, updateEnd, updateRepeat, updateType, updateTitle, updateStart, openNewEvent, clearEvent} = newEventSlice.actions;
+export const {updateDate, updateEnd, updateRepeat, updateType, updateTitle, updateStart, openNewEvent, closeNewEvent, clearEvent} = newEventSlice.actions;
 export const selectNewEvent = (state) => state.newEvent.value;
-export const selectOpenNewEvent = (state) => state.newEvent.value.open;
+export const newEventIsOpen = (state) => state.newEvent.isOpen;
 export default newEventSlice.reducer;

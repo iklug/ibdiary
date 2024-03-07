@@ -9,7 +9,8 @@ import { useSelector, useDispatch } from "react-redux";
 import { selectNewEvent, openNewEvent } from "../../redux/newEventSlice";
 import { addDay, selectMonths, trackMonth } from "../../redux/calendarSlice";
 import { getUser, selectUser } from "../../redux/profileSlice";
-
+import AddEvent from "./AddEvent";
+import { selectRepeatEvents } from "../../redux/repeatEventSlice";
 
 const MonthView = ({year, month, today}) => {
 
@@ -18,11 +19,16 @@ const backend = import.meta.env.MODE === 'development' ?  `http://localhost:3000
 
 const dispatch = useDispatch();
 
+const repeatedThings = useSelector(selectRepeatEvents);
+console.log('🥵', repeatedThings);
+
 const [sixRows, setSixRows] = useState(null);
 const thisMonthDays = arrayOfDaysInMonth(year, month);
 const daysBefore = arrayOfDaysInMonth(year, month - 1);
 const nextMonthDays = arrayOfDaysInMonth(year, month + 1);
 const firstDay = findFirstDay(year, month);
+const [newEvent, setNewEvent] = useState(false);
+const [newEventDate, setNewEventDate] = useState('');
 
 const trueMonth = thisMonthDays[0].twoDigitMonth;
 const monthsInState = useSelector(selectMonths);
@@ -114,11 +120,16 @@ useEffect(()=>{
 
 }, []);
 
+const addNewEvent = (date) => {
+    setNewEvent(!newEvent);
+    setNewEventDate(date);
+}
 
+console.log('messing in month view: ', newEvent, newEventDate );
 
 
 const dayArray = buildCalendar(thisMonthDays, firstDay, daysBefore, nextMonthDays, today);
-const dayArrayMap = dayArray.map(x => <Day {...x} key={`${x.year}-${x.month}-${x.day}`} dayId={x._id} />)
+const dayArrayMap = dayArray.map(x => <Day {...x} key={`${x.year}-${x.month}-${x.day}`} addNewEvent={addNewEvent} newEventView={newEvent} newEventDate={newEventDate} />)
 
 // console.log(window.innerHeight, window.innerWidth);
 
