@@ -196,20 +196,14 @@ router.delete('/:event', checkAuth, async (req,res)=> {
       const date = req.body.date;
       const day = await Day.findOne({date: date, user: req.user._id});
       const filtered = day.events.filter(x => x.id !== eventId );
-      if(filtered.length === 0){
-        const deleteDay = await Day.findByIdAndDelete(day[0]._id);
-        res.json(deleteDay.date);
-      } else {
-        const update = {
-          events: filtered
-        };
-        
-        const updateDay = await Day.findByIdAndUpdate(day[0]._id, update,{new:true, runValidators: true});
-        res.json(updateDay);
-      }
-      
-      
 
+      const update = {
+          events: filtered
+      };
+        
+        const updateDay = await Day.findByIdAndUpdate(day._id, update,{new:true, runValidators: true});
+        res.json(updateDay);
+  
     } catch (error) {
         res.status(500).json({message: error.message});
     }

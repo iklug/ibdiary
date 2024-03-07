@@ -27,14 +27,12 @@ const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth, addNewEvent, 
     const repeatedEvents = useSelector(selectRepeatEvents);
     const todaysRepeatedEvents = repeatedEvents[date] ? repeatedEvents[date] : null;
    
-   
-   
 
     // const sortedEvents = todaysEvents ? arrangeByStartTime(todaysEvents) : null;
     if(todaysEvents){
       console.log(todaysEvents.events);
     }
-    const sortedEvents = (todaysEvents) ? arrangeByStartTime(todaysEvents) : false;
+    const sortedEvents = todaysEvents ? arrangeByStartTime(todaysEvents) : false;
 
     console.log('sortedEVents', sortedEvents);
     // if(todaysEvents){

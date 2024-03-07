@@ -8,9 +8,9 @@ import fullDateFromString from "../../utils/fullDateFromString";
 const EventDetails = ({title, type, startTime, endTime, dayId, eventId, close, date, renderOn, edit, color}) => {
 
     const dispatch = useDispatch();
-    console.log(renderOn);
     const deleteEvent = async() => {
         try {
+            console.log('theeventid in eventdetails line 13', eventId);
            const request = await fetch(`http://localhost:3000/event/${eventId}`,{
               method: 'DELETE',
               credentials: 'include',
@@ -25,16 +25,14 @@ const EventDetails = ({title, type, startTime, endTime, dayId, eventId, close, d
                  throw new Error('this delete thing is so not okay');
               }
            const data = await request.json();
-           if(data.date){
+           
             const updateEvents = {
                 [data.date]: {
                     ...data
                 }
             }
             dispatch(addDay(updateEvents));
-           } else {
-            dispatch(deleteDay(data));
-           }
+           
 
         } catch (error) {
            console.error(error);
