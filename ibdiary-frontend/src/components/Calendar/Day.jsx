@@ -26,35 +26,15 @@ const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth, addNewEvent, 
     const [viewReflection, setViewReflection] = useState(false);
     const repeatedEvents = useSelector(selectRepeatEvents);
     const todaysRepeatedEvents = repeatedEvents[date] ? repeatedEvents[date] : null;
-    const combinedEvents = [];
-
-    if(todaysRepeatedEvents){
-      combinedEvents.push(todaysRepeatedEvents);
-    }
-    if(todaysEvents){
-      combinedEvents.push(todaysEvents.events);
-    }
-    if(combinedEvents.length > 0){
-      console.log(combinedEvents,'🐸')
-    }
    
-    const flattenCombined = combinedEvents.reduce((acc, curr) => {
-       return acc.concat(curr);
-      },[]);
-
-    const doItAgain = flattenCombined.reduce((acc,curr)=>{
-      const isDuplicate = acc.some(item => item._id === curr._id);
-      if(!isDuplicate){
-        acc.push(curr);
-      }
-      return acc;
-    }, []);
-    console.log('📟📟📟📟📟', doItAgain);
-
+   
+   
 
     // const sortedEvents = todaysEvents ? arrangeByStartTime(todaysEvents) : null;
-
-    const sortedEvents = (doItAgain.length > 0) ? arrangeByStartTime(doItAgain) : false;
+    if(todaysEvents){
+      console.log(todaysEvents.events);
+    }
+    const sortedEvents = (todaysEvents) ? arrangeByStartTime(todaysEvents) : false;
 
     console.log('sortedEVents', sortedEvents);
     // if(todaysEvents){
@@ -102,7 +82,7 @@ const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth, addNewEvent, 
          
                         {
                         (sortedEvents && hiddenNumber > 0) &&
-                          sortedEvents.slice(0, hiddenNumber).map((x, index) => <Event {...x} date={date} key={x._id} />)
+                          sortedEvents.slice(0, hiddenNumber).map((x) => <Event {...x} date={date} key={x._id} />)
                         }
                       {/* <div className=" font-bold text-xs pl-2 truncate">{(todaysEvents && parentNode.current && window.innerHeight > 350 && (todaysEvents.events.length !== parentNode.current.children.length - 1))
                       && (todaysEvents.events.length - parentNode.current.children.length + 1) + ' more'}</div>    */}
