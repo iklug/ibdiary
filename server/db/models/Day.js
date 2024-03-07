@@ -10,10 +10,12 @@ const DaySchema = new Schema({
         required: true,
     },
     user: {
-        type: String,
+        type: Schema.Types.ObjectId,
+        ref: 'User',
         required: true,
     },
     events: [EventSchema],
+    repeatingEvents: [{type: Schema.Types.ObjectId, ref: 'RepeatingEvent'}],
     reflection: {
         body: {
             type: String,
