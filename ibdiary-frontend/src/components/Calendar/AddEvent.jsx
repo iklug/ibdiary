@@ -61,6 +61,23 @@ const AddEvent = ({closeEvent=(()=>console.log('')), defaultDate, reflection=fal
 
     const submitEvent = async(backend, event) => {
         try {
+            
+            if(event.repeat > 0){
+            const request = await fetch(`${backend}/event/repeating`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(event),
+            });
+            if(!request.ok){
+                throw new Error('failed repeat event add @ AddEvent.jsx');
+            }
+            const data = await request.json();
+            console.log('received from repeating post request: ',data);
+            closeEvent();
+            } else {
             const request = await fetch(`${backend}/event`,{
                 method: 'POST',
                 credentials: 'include',
@@ -76,7 +93,7 @@ const AddEvent = ({closeEvent=(()=>console.log('')), defaultDate, reflection=fal
             dispatch(addDay({[newEventObj.date]:data}));
             closeEvent();
             console.log(data);
-
+}
 
         } catch (error) {
             console.error(error);

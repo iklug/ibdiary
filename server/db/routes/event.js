@@ -38,9 +38,9 @@ router.get('/initial/:year/:month', checkAuth, async (req,res)=>{
   const after = new RegExp(monthAndYearAfter(year, month));
   console.log(before, after);
   try {
-      const previousMonth = await Day.find({date: {$regex: before}, user: req.user._id });
-      const currentMonth = await Day.find({date: {$regex: regexSearch}, user: req.user._id});
-      const nextMonth = await Day.find({date: {$regex: after}, user: req.user._id});
+      const previousMonth = await Day.find({date: {$regex: before}, user: req.user._id }).populate('repeatingEvents');
+      const currentMonth = await Day.find({date: {$regex: regexSearch}, user: req.user._id}).populate('repeatingEvents');
+      const nextMonth = await Day.find({date: {$regex: after}, user: req.user._id}).populate('repeatingEvents');
       //this could be 30 events .. and then the way i have it set up you'd have to do 30 searches to find groups of events
       const allEvents = [...previousMonth, ...currentMonth, ...nextMonth];
 
@@ -155,30 +155,33 @@ router.put('/:eventId', async (req,res)=> {
 
 router.post('/repeating', checkAuth, async(req,res)=>{
   try {
-    
+    console.log('req.body for repeat', req.body);
     const futureDates = printDates(req.body.repeat, req.body.date);
 
     const repeatingEvent = {
       title: req.body.title,
+      user: req.user._id,
       type: req.body.type,
       startTime: req.body.startTime,
       endTime: req.body.endTime,
       repeat: req.body.repeat,
-      _id: req.body._id,
       dates: futureDates,
     };
+    console.log(repeatingEvent);
 
-    const  newRepeatEvent = await RepeatingEvent.create({repeatingEvent});
+    const  newRepeatEvent = await RepeatingEvent.create({...repeatingEvent});
 
     for(const date of futureDates){
       const newDay = await Day.findOne({date: date, user: req.user._id});
-      if(newDay.length > 0){
-        const updateDay = await Day.findOneAndUpdate({_id: newDay[0]._id}, {$push: {repeatingEvents: newRepeatEvent._id}}, {new:true, runValidators: true});
+      if(newDay){
+        console.log('newDay', newDay._id);
+        console.log('event', newRepeatEvent._id);
+        const updateDay = await Day.findOneAndUpdate({_id: newDay._id}, {$push: {repeatingEvents: newRepeatEvent._id}}, {new:true, runValidators: true});
       } else {
         const createDay = await Day.create({date: date, user: req.user._id, repeatingEvents: [newRepeatEvent._id]});
       }
     }
-    req.json('i dunno, check the db');
+    res.json('i dunno, check the db');
   } catch (error) {
     console.error(error);
     res.json(error);

@@ -77,6 +77,7 @@ useEffect(()=> {
               throw new Error('request resulted in error @ getEvents in MonthView.jsx');
           }
           const data = await request.json();
+          console.log('🦁🦁🦁',data);
           const dataObject = {};
          data.forEach(x => dataObject[x.date] = x);
             dispatch(addDay(dataObject));
