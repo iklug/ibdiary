@@ -17,18 +17,18 @@ const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth, addNewEvent, 
 
     const date = `${year}-${twoDigitMonth}-${twoDigitDay}`;
     const events = useSelector(selectCalendar);
+    
 
     const todaysEvents = events[date] ? events[date] : null;
+    if(todaysEvents){
+      console.log('😨😨😨😨',todaysEvents);
+    }
     const todayString = useSelector(selectToday).string;
     const blueCircle = `${year}-${month}-${day}` === todayString ? 'border-2 border-blue-300 pl-2 pr-2 rounded-full' : '';
     const today = new Date(year, month, day);
     const thisMonth = today.toLocaleString('default', {month: 'short'});
     const [viewReflection, setViewReflection] = useState(false);
 
-    // const sortedEvents = todaysEvents ? arrangeByStartTime(todaysEvents) : null;
-    if(todaysEvents){
-      console.log(todaysEvents.events);
-    }
   
     let mixedBag;
     if(todaysEvents){
@@ -36,7 +36,6 @@ const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth, addNewEvent, 
     }
     const sortedEvents = todaysEvents ? arrangeByStartTime(mixedBag) : false;
 
-    console.log('sortedEVents', sortedEvents);
     // if(todaysEvents){
     //   sortedEvents = arrangeByStartTime(todaysEvents);
     // }
@@ -68,7 +67,6 @@ const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth, addNewEvent, 
       setHiddenNumber(0);
     }
 
-    console.log(hiddenNumber);
 
     return (
        <div className="border h-full w-full flex flex-col flex-1 items-center pt-2 text-sm font-semibold select-none min-w-0 text-clip">
@@ -89,7 +87,7 @@ const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth, addNewEvent, 
                       {(sortedEvents && sortedEvents.length > hiddenNumber && window.innerHeight > 350) && <div className="font-bold text-xs pl-2 truncate relative" onClick={()=>setViewAllEvents(!viewAllEvents)}>{sortedEvents.length - hiddenNumber} more
          
                       </div>}
-                      {viewAllEvents && <ViewAllEvents events={todaysEvents.events} date={date} close={()=>setViewAllEvents(!viewAllEvents)} thisMonth={thisMonth} day={day} />}
+                      {viewAllEvents && <ViewAllEvents events={sortedEvents} date={date} close={()=>setViewAllEvents(!viewAllEvents)} thisMonth={thisMonth} day={day} />}
                       </div>
                  </div>}
          </div>

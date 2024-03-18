@@ -3,7 +3,7 @@ import Button from "../Button";
 import { useDispatch, useSelector } from "react-redux";
 import { clearEvent, updateTitle, updateDate, updateType, updateStart, updateEnd, selectNewEvent } from "../../redux/newEventSlice";
 import { selectToday } from "../../redux/dateSlice";
-import { addDay, selectCalendar } from "../../redux/calendarSlice";
+import { addDay, selectCalendar, addBulk } from "../../redux/calendarSlice";
 import ReactDOM from 'react-dom';
 import AddReflection from "./AddReflection";
 
@@ -25,6 +25,8 @@ const AddEvent = ({closeEvent=(()=>console.log('')), defaultDate, reflection=fal
         endTime: undefined,
         repeat: undefined,
     });
+
+    const calendar = useSelector(selectCalendar);
 
     const handleX = () => {
         closeEvent();
@@ -71,11 +73,15 @@ const AddEvent = ({closeEvent=(()=>console.log('')), defaultDate, reflection=fal
                 },
                 body: JSON.stringify(event),
             });
-            if(!request.ok){
+            if(!request.ok){12
                 throw new Error('failed repeat event add @ AddEvent.jsx');
             }
             const data = await request.json();
-            console.log('received from repeating post request: ',data);
+            const fixData = data.reduce((acc,curr)=>{
+                acc[curr.date] = curr;
+                return acc;
+            },{});
+            dispatch(addDay(fixData));
             closeEvent();
             } else {
             const request = await fetch(`${backend}/event`,{
@@ -90,9 +96,9 @@ const AddEvent = ({closeEvent=(()=>console.log('')), defaultDate, reflection=fal
                 throw new Error('request resulted in error @ submitEvent in AddEvent.jsx');
             }
             const data = await request.json();
-            dispatch(addDay({[newEventObj.date]:data}));
+            console.log('add normal event, line 98 in AddEVent', data);
+            dispatch(addDay({[data.date]:data}));
             closeEvent();
-            console.log(data);
 }
 
         } catch (error) {

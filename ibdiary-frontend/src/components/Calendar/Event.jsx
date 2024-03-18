@@ -4,6 +4,7 @@ import EditEventDetails from "./EditEventDetails";
 import { addRepeatEvent, selectRepeatEvents } from "../../redux/repeatEventSlice";
 import { useSelector, useDispatch } from "react-redux";
 import repeatEvent from "../../utils/repeatEvent";
+import EditRepeatingEventDetails from "./EditRepeatingEventDetails";
 
 const Event = ({title, type, startTime, endTime, _id='123', dayId='123', date, repeat=0}) => {
 
@@ -43,17 +44,19 @@ const showEventDetails = (e) => {
 
 return (
         <div className="pl-1 flex justify-start items-center min-w-0 truncate">
-          <div className={`${colorObj[type]} rounded-full h-2 w-2 min-w-0 shrink-0`} onClick={(e) => console.log(e.clientX)}></div>
+          <div className={`${colorObj[type]} rounded-full h-2 w-2 min-w-0 shrink-0`} onClick={(e) => console.log(e.clientX, 'in Event.jsx line 47, fix this')}></div>
           <div className="text-xs font-light min-w-0 pr-1 tracking-tighter shrink-0" onClick={showEventDetails}>{startTime}</div>
           <div className="text-xs font-normal truncate min-w-0" onClick={showEventDetails}>{title}</div>
           {viewEvent && 
             <div className="absolute">
-              <EventDetails title={title} type={type} color={colorObj[type]} startTime={startTime} endTime={endTime} eventId={_id} dayId={dayId} date={date} renderOn={renderOn} close={() => setViewEvent(!viewEvent)} edit={() => setEditEvent(true)} />
+              <EventDetails title={title} type={type} color={colorObj[type]} repeat={repeat} startTime={startTime} endTime={endTime} eventId={_id} dayId={dayId} date={date} renderOn={renderOn} close={() => setViewEvent(!viewEvent)} edit={() => setEditEvent(true)} />
             </div>
           }
           {editEvent && 
             <div className="absolute z-10">
-              <EditEventDetails title={title} type={type} color={colorObj[type]} startTime={startTime} endTime={endTime} eventId={_id} dayId={dayId} date={date} renderOn={renderOn} close={() => setEditEvent(false)} />
+              {repeat >= 1 ? <EditRepeatingEventDetails title={title} type={type} color={colorObj[type]} startTime={startTime} endTime={endTime} eventId={_id} dayId={dayId} date={date} renderOn={renderOn} close={() => setEditEvent(false)} repeat={repeat} /> : <EditEventDetails title={title} type={type} color={colorObj[type]} startTime={startTime} endTime={endTime} eventId={_id} dayId={dayId} date={date} renderOn={renderOn} close={() => setEditEvent(false)} repeat={repeat}/> 
+                
+              }
             </div>
           }
         </div>

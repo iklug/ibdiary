@@ -17,7 +17,6 @@ const AddReflection = ({date, closeReflection}) => {
         edited: true,
         date: date,
     });
-    console.log(reflectionObj);
     const dispatch = useDispatch();
 
     const submitReflection = async(obj) => {
@@ -34,7 +33,6 @@ const AddReflection = ({date, closeReflection}) => {
                 throw new Error('error triggered in AddReflection @ submitReflection func')
             }
             const data = await request.json();
-            console.log(data);
             dispatch(addDay({[data.date]:data}));
             closeReflection();
         } catch (error) {

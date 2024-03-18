@@ -1,10 +1,7 @@
 
 
 const arrangeByStartTime = (todaysEvents) => {
-    console.log('inarranging: ', todaysEvents);
-    // let sortedEvents = false;
-    // if(todaysEvents !== null){
-    // const modifyArray = [...todaysEvents.events]; 
+
     const modifyArray = todaysEvents; 
         try {
             const sortedEvents = modifyArray.sort((a,b)=>{

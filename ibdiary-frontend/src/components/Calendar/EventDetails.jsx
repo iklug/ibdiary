@@ -2,43 +2,97 @@ import { useDispatch, useSelector } from "react-redux";
 import { addDay, deleteDay } from "../../redux/calendarSlice";
 import { selectCalendar } from "../../redux/calendarSlice";
 import fullDateFromString from "../../utils/fullDateFromString";
+import { useState } from "react";
+import ConfirmEditRepeatPopup from "./ConfirmEditRepeatPopup";
 
 
+const EventDetails = ({title, type, startTime, endTime, dayId, eventId, close, date, renderOn, edit, color, repeat}) => {
 
-const EventDetails = ({title, type, startTime, endTime, dayId, eventId, close, date, renderOn, edit, color}) => {
 
     const dispatch = useDispatch();
+    const [instance, setInstance] = useState('single');
+    const [confirm, setConfirm] = useState(false);
+
     const deleteEvent = async() => {
         try {
-            console.log('theeventid in eventdetails line 13', eventId);
-           const request = await fetch(`http://localhost:3000/event/${eventId}`,{
-              method: 'DELETE',
-              credentials: 'include',
-              headers: {
-                 'Content-Type': 'application/json',
-              },
-              body: JSON.stringify({
-                date: date,
-              })
-           });
-              if(!request.ok){
-                 throw new Error('this delete thing is so not okay');
-              }
-           const data = await request.json();
 
-            const updateEvents = {
-                [data.date]: {
-                    ...data
+            if(repeat > 0 && instance === 'single'){
+                const request = await fetch('http://localhost:3000/event/repeat/single', {
+                    method: 'DELETE',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        _id: eventId,
+                        date: date,
+                    }),
+                });
+                if(!request.ok){
+                    throw new Error('error in delete event @ EventDetails');
                 }
+                const data = await request.json();
+                console.log('attempting to delete a single repeat event',data.repeatingEvents);
+                dispatch(addDay({[data.date]: data}));
+            } 
+            
+            if(repeat > 0 && instance === 'all'){
+                const request = await fetch('http://localhost:3000/event/repeat/all', {
+                    method: 'DELETE',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        _id: eventId,
+                        date: date,
+                    }),
+                });
+                if(!request.ok){
+                    throw new Error('error in delete event @ EventDetails');
+                }
+                window.location.reload();
             }
-            dispatch(addDay(updateEvents));
-           
+            
+            else {
+
+                const request = await fetch(`http://localhost:3000/event/${eventId}`,{
+                   method: 'DELETE',
+                   credentials: 'include',
+                   headers: {
+                      'Content-Type': 'application/json',
+                   },
+                   body: JSON.stringify({
+                     date: date,
+                   })
+                });
+                   if(!request.ok){
+                      throw new Error('this delete thing is so not okay');
+                   }
+                const data = await request.json();
+     
+                 const updateEvents = {
+                     [data.date]: {
+                         ...data
+                     }
+                 }
+                 dispatch(addDay(updateEvents));
+                
+            }
+            
 
         } catch (error) {
            console.error(error);
         }
      };
 
+    const handleTrash = () => {
+        if(repeat > 0){
+            setConfirm(true);
+        } else {
+            deleteEvent();
+        }
+    };
 
      const position = renderOn === 'left' ? 'right-[400px]' : 'left-[175px]';
 
@@ -49,7 +103,7 @@ const EventDetails = ({title, type, startTime, endTime, dayId, eventId, close, d
                     <div className="" onClick={()=>edit()}>edit</div>
                 </div>
                 <div className="h-6 w-12 bg-gray-100 hover:shadow-md flex justify-center items-center rounded-lg">
-                    <div className=" select-none" onClick={deleteEvent}>trash</div>
+                    <div className=" select-none" onClick={handleTrash}>trash</div>
                 </div>
                 <div className="h-6 w-6 flex justify-center items-center bg-gray-50 shadow-sm hover:bg-gray-100 rounded-full" onClick={()=>close()}>
                     <div>X</div>
@@ -60,17 +114,20 @@ const EventDetails = ({title, type, startTime, endTime, dayId, eventId, close, d
                     <div className={`${color} rounded-md h-3 w-3`}></div>
                     <div className="text-gray-600 text-lg overflow-x-auto">{title}</div>
                 </div>
-                <div className="flex items-center h-6 gap-2 ml-2">
+                <div className="flex flex-col items-start h-6 gap-2 ml-4">
                 <div className={`rounded-md h-3 w-3`}></div>
-                    <div>{fullDateFromString(date)}</div>
-                    {startTime && <div className='flex gap-2'>
-                        <div>@ {startTime}</div>
-                    {endTime && <div>-</div>}
-                    {endTime && <div>{`${endTime}`}</div>}
-                    </div>}
+                    <div className="flex gap-2">
+                        <div>{fullDateFromString(date)}</div>
+                        {startTime && <div className='flex gap-2'>
+                            <div>@ {startTime}</div>
+                        {endTime && <div>-</div>}
+                        {endTime && <div>{`${endTime}`}</div>}
+                        </div>}
+                    </div>
+                    {(repeat > 0) &&<div>Repeats every {repeat < 2 ? '' : repeat} week{repeat > 1 && 's'}</div>}
                 </div>
             </div>
-
+            <div className="relative">{confirm && <ConfirmEditRepeatPopup changeInstance={(instance)=>setInstance(instance)} cancelFunction={()=>setConfirm(false)} submit={()=>deleteEvent()} selected={instance}/>}</div>
         </div>
     )
 }

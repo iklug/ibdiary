@@ -8,7 +8,6 @@ import { useState } from "react";
 
 const EditEventDetails = ({title, type, startTime, endTime, repeat, dayId, eventId, close, date, renderOn, color}) => {
 
-    console.log(date);
 
     const [newEventObj, setNewEventObj] = useState({
         title: title,
@@ -17,10 +16,12 @@ const EditEventDetails = ({title, type, startTime, endTime, repeat, dayId, event
         newDate: date,
         startTime: startTime,
         endTime: endTime,
+        newRepeat: repeat,
         repeat: repeat,
         _id: eventId,
     });
     const [addEndTime, setAddEndTime] = useState(endTime);
+    const [allInstances, setAllInstances] = useState(true);
 
 
     const backend = import.meta.env.MODE === 'development' ?  `http://localhost:3000` : ''; 
@@ -30,21 +31,42 @@ const EditEventDetails = ({title, type, startTime, endTime, repeat, dayId, event
 
     const submitEvent = async(backend, event) => {
         try {
-            const request = await fetch(`${backend}/event/${eventId}`,{
-                method: 'PUT',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(event)
-            });
-            if(!request.ok){
-                throw new Error('request resulted in error @ submitEvent in AddEvent.jsx');
+
+            if(event.repeat > 0){
+                const request = await fetch(`${backend}/event/${eventId}/${allInstances ? 'all' : 'single'}`,{
+                    method: 'PUT',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(event)
+                });
+                if(!request.ok){
+                    throw new Error('accessing editRepeat in EditEventDetails failed');
+                }
+                const data = await request.json();
+                console.log('editeventdetails, line 48', data);
+                close();
+
+            } else {
+                const request = await fetch(`${backend}/event/${eventId}`,{
+                    method: 'PUT',
+                    credentials: 'include',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(event)
+                });
+                if(!request.ok){
+                    throw new Error('request resulted in error @ submitEvent in AddEvent.jsx');
+                }
+                const data = await request.json();
+                dispatch(removeEvent({date: event.originalDate, id: event._id}))
+                dispatch(addDay({[data.date]:data}));
+                close();
+
             }
-            const data = await request.json();
-            dispatch(removeEvent({date: event.originalDate, id: event._id}))
-            dispatch(addDay({[data.date]:data}));
-            close();
+
         } catch (error) {
             console.error(error);
         }

@@ -13,7 +13,6 @@ const [editEvent, setEditEvent] = useState(false);
 
 const dispatch = useDispatch();
 const repeatEvents = useSelector(selectRepeatEvents);
-console.log('repeatEvents in Event.js', repeatEvents);
 
 const colorObj = {
     'event': 'bg-blue-300',
@@ -39,7 +38,6 @@ const showEventDetails = (e) => {
     setViewEvent(!viewEvent);
 }
 
-console.log('repeatEvents at this particular date',repeatEvents[date]);
 
 if(repeat > 0) {
     if(repeatEvents[date]){

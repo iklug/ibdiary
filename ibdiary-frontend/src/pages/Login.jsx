@@ -14,7 +14,6 @@ const Login = () => {
     const [password, setPassword] = useState('');
     const [loggedIn, setLoggedIn] = useState(false);
     
-    console.log('testing repeatEvent: ', repeatEvent({repeat: 2}, '2024-11-20'));
 
     const submitLogin = async() => {
         try {

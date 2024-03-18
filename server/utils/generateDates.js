@@ -3,7 +3,7 @@ const printDates = (number, date) => {
     const start = new Date(`${date}T00:00:00`);
     const dateCollection = [start];
   
-    for(let i=0; i<30; i++){
+    for(let i=0; i<10; i++){
       const next = new Date(dateCollection[i]);
       next.setDate(next.getDate() + (number * 7));
       dateCollection.push(next);

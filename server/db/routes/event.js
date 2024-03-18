@@ -11,8 +11,7 @@ const RepeatingEvent = require('../models/RepeatingEvent');
 
 
 
-//this is just a place holder to make sure the DB is up and running
-//replace when you get to routes
+
 router.get('/:year/:month',checkAuth, async (req,res)=>{
     const year = req.params.year;
     const month = req.params.month;
@@ -71,38 +70,53 @@ router.get('/next/:year/:month', async (req,res)=>{
 
 router.post('/', checkAuth, async (req,res)=> {
     try {
-        const day = await Day.find({date: req.body.date, user: req.user._id});
+        // const day = await Day.find({date: req.body.date, user: req.user._id});
 
-        if(day.length > 0){
-          const update = {$push: { events:{
-            title: req.body.title,
-            type: req.body.type,
-            startTime: req.body.startTime,
-            endTime: req.body.endTime,
-            repeat: req.body.repeat,}
-          }}
-          const event = await Day.findOneAndUpdate({_id:day[0]._id}, update, {new:true, runValidators: true});
+        // if(day.length > 0){
+        //   const update = {$push: { events:{
+        //     title: req.body.title,
+        //     type: req.body.type,
+        //     startTime: req.body.startTime,
+        //     endTime: req.body.endTime,
+        //     repeat: req.body.repeat,}
+        //   }}
+        //   const event = await Day.findOneAndUpdate({_id:day[0]._id}, update, {new:true, runValidators: true});
         
-          res.send(event);
-        }
-        if(day.length === 0){
-          const newDay = await Day.create({
-            date: req.body.date,
-            user: req.user._id,
-            events: [
-              {
-                title: req.body.title,
-                type: req.body.type,
-                startTime: req.body.startTime,
-                endTime: req.body.endTime,
-                repeat: req.body.repeat,
-              }
-            ],
-          });
+        //   res.send(event);
+        // }
+        // if(day.length === 0){
+        //   const newDay = await Day.create({
+        //     date: req.body.date,
+        //     user: req.user._id,
+        //     events: [
+        //       {
+        //         title: req.body.title,
+        //         type: req.body.type,
+        //         startTime: req.body.startTime,
+        //         endTime: req.body.endTime,
+        //         repeat: req.body.repeat,
+        //       }
+        //     ],
+        //   });
          
 
-          res.send(newDay);
+        //   res.send(newDay);
+        // }
+        const update = {
+          title: req.body.title,
+          type: req.body.type,
+          startTime: req.body.startTime,
+          endTime: req.body.endTime,
+          repeat: req.body.repeat,
         }
+        const day = await Day.findOneAndUpdate({date: req.body.date, user: req.user._id}, {$push:{events: update}}, {new:true, runValidators:true}).populate('repeatingEvents');
+        if(day){
+          res.json(day);
+        } else {
+          const newDay = await Day.create({date: req.body.date, user: req.user._id, events: [update]});
+          res.json(newDay);
+        }
+
     } catch (error) {
         res.status(500).json({message: error.message});
     }
@@ -124,9 +138,6 @@ router.put('/:eventId', async (req,res)=> {
 
   const initialDay = await Day.findOneAndUpdate({date: req.body.originalDate, user: req.user._id}, {$pull: {events: {_id: convertTypeId}}}, {new:true, runValidators: true});
       if(req.body.originalDate !== req.body.newDate){
-        if(initialDay.events.length === 0){
-        const deleteDay = await Day.deleteOne({date: req.body.originalDate, user: req.user._id});
-        }
         const newDay = await Day.find({date: req.body.newDate, user: req.user._id});
         if(newDay.length === 0){
           const makeDay = await Day.create({date: req.body.newDate, user: req.user._id, events: [updatedEvent]});
@@ -171,22 +182,137 @@ router.post('/repeating', checkAuth, async(req,res)=>{
 
     const  newRepeatEvent = await RepeatingEvent.create({...repeatingEvent});
 
+    const allUpdatedDays = [];
+
     for(const date of futureDates){
-      const newDay = await Day.findOne({date: date, user: req.user._id});
-      if(newDay){
-        console.log('newDay', newDay._id);
-        console.log('event', newRepeatEvent._id);
-        const updateDay = await Day.findOneAndUpdate({_id: newDay._id}, {$push: {repeatingEvents: newRepeatEvent._id}}, {new:true, runValidators: true});
-      } else {
-        const createDay = await Day.create({date: date, user: req.user._id, repeatingEvents: [newRepeatEvent._id]});
+      // const newDay = await Day.findOne({date: date, user: req.user._id});
+      // if(newDay){
+      //   console.log('newDay', newDay._id);
+      //   console.log('event', newRepeatEvent._id);
+      
+      const updateDay = await Day.findOneAndUpdate({date:date, user:req.user._id}, {$push: {repeatingEvents: newRepeatEvent._id}}, {new:true, runValidators: true}).populate('repeatingEvents');
+      
+      if(updateDay){
+        console.log('updateDay after populate', updateDay);
+        allUpdatedDays.push(updateDay);
       }
+      if(!updateDay){
+      const createDay = await Day.create({date: date, user: req.user._id, repeatingEvents: [newRepeatEvent._id]});
+      const populateCreateDay = await createDay.populate('repeatingEvents');
+      allUpdatedDays.push(populateCreateDay);
     }
-    res.json('i dunno, check the db');
+    }
+    res.json(allUpdatedDays);
   } catch (error) {
     console.error(error);
     res.json(error);
   }
 })
+
+router.put('/:eventId/all', async(req,res)=>{
+  console.log('is this the one that is running?/?')
+  try { 
+    const update = {
+      title: req.body.title,
+      type: req.body.type,
+      startTime: req.body.startTime,
+      endTime: req.body.endTime,
+      repeat: req.body.newRepeat,
+    };
+  if(req.body.originalDate === req.body.newDate && req.body.repeat === req.body.newRepeat){
+    const event = await RepeatingEvent.findByIdAndUpdate(req.params.eventId, update, {new:true, runValidators:true});
+    res.json(event);
+  } else {
+    const dates = printDates(req.body.newRepeat, req.body.newDate);
+    const diffUpdate = {
+      title: req.body.title,
+      type: req.body.type,
+      startTime: req.body.startTime,
+      endTime: req.body.endTime,
+      repeat: req.body.newRepeat,
+      dates: dates,
+      user: req.user._id,
+    };
+    const deleteOriginal = await RepeatingEvent.findByIdAndDelete(req.params.eventId);
+    const  newRepeatEvent = await RepeatingEvent.create({...diffUpdate});
+
+    const allUpdatedDays = [];
+
+    for(const date of dates){
+      // const newDay = await Day.findOne({date: date, user: req.user._id});
+      // if(newDay){
+      //   console.log('newDay', newDay._id);
+      //   console.log('event', newRepeatEvent._id);
+      
+      const updateDay = await Day.findOneAndUpdate({date:date, user:req.user._id}, {$push: {repeatingEvents: newRepeatEvent._id}}, {new:true, runValidators: true}).populate('repeatingEvents');
+      
+      if(updateDay){
+        console.log('updateDay after populate', updateDay);
+        allUpdatedDays.push(updateDay);
+      }
+      if(!updateDay){
+      const createDay = await Day.create({date: date, user: req.user._id, repeatingEvents: [newRepeatEvent._id]});
+      const populateCreateDay = await createDay.populate('repeatingEvents');
+      allUpdatedDays.push(populateCreateDay);
+    }
+    }
+    console.log('allUpdatedDays',allUpdatedDays);
+    res.json(allUpdatedDays);
+  }
+  } catch (error) {
+  console.log(error);
+  res.status(500).json({message: error.message})
+  }}
+);
+
+router.put('/:eventId/single', checkAuth, async(req,res)=>{
+
+  try { 
+    console.log('what is going on here >>>>>>>>>',req.body);
+  
+    // const dates = printDates(update.newRepeat, update.newDate);
+    const diffUpdate = {
+      title: req.body.title,
+      type: req.body.type,
+      startTime: req.body.startTime,
+      endTime: req.body.endTime,
+      repeat: 0,
+      date: req.body.newDate,
+    };
+    const objectId = new mongoose.Types.ObjectId(req.params.eventId);
+    const dayArray = [];
+
+    if(req.body.originalDate !== req.body.newDate){
+      const previousDay = await Day.findOneAndUpdate({date: req.body.originalDate, user: req.user._id}, {
+        $pull: {
+          repeatingEvents: objectId,
+        }
+      });
+      dayArray.push(previousDay);
+    }
+    
+    const day = await Day.findOneAndUpdate({date: req.body.newDate, user: req.user._id}, {
+      $push: {
+        events: diffUpdate,
+      },
+      $pull: {
+        repeatingEvents: objectId,
+      }
+    }, {new:true, runValidators: true});
+    if(day){
+      dayArray.push(day);
+    } else {
+      const newDay = await Day.create({date: req.body.newDate, user: req.user._id, events: [diffUpdate]});
+      dayArray.push(newDay);
+    }
+console.log('1', dayArray);
+    res.json(dayArray);
+  } catch (error) {
+  console.log(error);
+  res.status(500).json({message: error.message})
+  }
+})
+
 
 
 router.post('/reflection', checkAuth, async(req,res)=>{
@@ -202,7 +328,7 @@ router.post('/reflection', checkAuth, async(req,res)=>{
    const dayExists = await Day.findOne({date: req.body.date, user: req.user._id});
    console.log('in reflection post', dayExists);
    if(dayExists){
-     const updatedDay = await Day.findOneAndUpdate({_id: dayExists._id}, {$set:{ reflection: update}}, {new:true, runValidators: true});
+     const updatedDay = await Day.findOneAndUpdate({_id: dayExists._id}, {$set:{ reflection: update}}, {new:true, runValidators: true}).populate('repeatingEvents');
      console.log('this is supposed to be the updated Day: ',updatedDay);
      res.json(updatedDay);
    } else {
@@ -248,8 +374,59 @@ router.delete('/:event', checkAuth, async (req,res)=> {
     }
 });
 
+// router.delete('/repeat/single', checkAuth, async (req,res)=>{
+//   try {
+//     //find the objectId associated with this particular repeat event
+//     //remove that object id from the repeatingEvents array
+//     //do i have it added in the event, i do, but does it even matter?
+//     const date = req.body.date;
+//     const eventId = req.params._id;
+//     const convertTypeId = new mongoose.Types.ObjectId(`${eventId}`);
+//     const filterEvent = (eventId, array) => {
+//       return array.filter(item => item !== eventId);
+//     }
 
+//     const query = await Day.findOne({date: date, user: req.user._id});
+//     const newRepeatingEvents = query.repeatingEvents.filter(item => item._id !== convertTypeId);
+//     const update = await Day.findByIdAndUpdate(query._id, {repeatingEvents: newRepeatingEvents}, {new:true, runValidators: true});
+//   } catch (error) {
+//     res.status(500).json({message: error.message});
+//   }
+// });
 
+router.delete('/repeat/all', checkAuth, async(req,res)=> {
+  try {
+    // const convertTypeId = new mongoose.Types.ObjectId(`${req.body._id}`);
+
+    const repeatingEvent = await RepeatingEvent.findOneAndDelete({_id: req.body._id});
+    const information = repeatingEvent.dates;
+    console.log('information', information)
+    res.json(information);
+  } catch (error) {
+    res.status(500).json({message: error.message});
+  }
+});
+
+router.delete('/repeat/single', checkAuth, async(req,res)=> {
+  
+  try {
+    // const query = await Day.findOne({date: req.body.date, user: req.user._id});
+    // const update = query.repeatingEvents.filter(item => item.toString() !== req.body._id);
+    // const updatedQuery = await Day.findOneAndUpdate({date: req.body.date, user: req.user._id}, {repeatingEvents: update}, {new: true, runValidators: true});
+    const updatedQuery = await Day.findOneAndUpdate({date: req.body.date, user: req.user._id}, {$pull: {repeatingEvents: req.body._id}}, {new: true, runValidators: true});
+    res.json(updatedQuery);
+  } catch (error) {
+    res.status(401).json({message: error.message});
+  }
+});
+
+// router.put('repeat/all', checkAuth, async(req,res)=>{
+// try {
+//   const update = 
+// } catch (error) {
+//   res.status(500).json({message: error.message});
+// }
+// });
 
 
 
