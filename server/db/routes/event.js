@@ -366,7 +366,7 @@ router.delete('/:event', checkAuth, async (req,res)=> {
           events: filtered
       };
         
-        const updateDay = await Day.findByIdAndUpdate(day._id, update,{new:true, runValidators: true});
+        const updateDay = await Day.findByIdAndUpdate(day._id, update,{new:true, runValidators: true}).populate('repeatingEvents');
         res.json(updateDay);
   
     } catch (error) {
