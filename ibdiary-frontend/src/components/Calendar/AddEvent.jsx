@@ -154,7 +154,7 @@ const AddEvent = ({closeEvent=(()=>console.log('')), defaultDate, reflection=fal
             </div>
             
             }
-            {viewReflection && <AddReflection date={defaultDate} closeReflection={closeEvent}/>
+            {viewReflection && <AddReflection date={defaultDate} closeReflection={closeReflection}/>
 
             }
         </div>
