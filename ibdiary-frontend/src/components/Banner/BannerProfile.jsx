@@ -7,7 +7,7 @@ import ProfileDropdown from "../Profile/ProfileDropdown";
 import ProfileDropdownFull from "../Profile/ProfileDropdownFull";
 import { replaceState } from "../../redux/calendarSlice";
 
-const BannerProfile = ({color, firstInitial, showDropdown}) => {
+const BannerProfile = ({color, showDropdown}) => {
     
 const [openDropdown, setOpenDropdown] = useState(false);
 const [selected, setSelected] = useState('Personal');
@@ -15,10 +15,10 @@ const [viewProfile, setViewProfile] = useState(false);
 const [loggedOut, setLoggedOut] = useState(false);
 const navigate = useNavigate();
 
+
 const dispatch = useDispatch();
 
 const currentUser = useSelector(selectUser);
-console.log('currentUser: ',currentUser);
 
 const user = localStorage.getItem('user');
 console.log('user with localStorage: ', user);
@@ -40,6 +40,7 @@ const logout = async() => {
 
         setLoggedOut(true);
         dispatch(replaceState());
+        sessionStorage.removeItem('user');
         console.log('replaced state?')
 
     } catch (error) {
@@ -70,7 +71,7 @@ if(loggedOut){
 return (
         <div>    
             <div className={`${buttonColor[color]} text-white font-bold h-9 w-9 ml-4 rounded-full flex flex-row justify-center items-center transition-colors duration-200 px-5 py-5 select-none relative`} id='dropdown' onClick={()=>openAndClose()}>
-                {firstInitial}
+                {currentUser ? currentUser.personal.preferredName ? currentUser.personal.preferredName[0].toUpperCase() : ':)' : ':)'}
             </div>
             <div className="relative">
                 {openDropdown && <ProfileDropdown logout={()=>logout()} openProfile={()=>setViewProfile(!viewProfile)}/>}

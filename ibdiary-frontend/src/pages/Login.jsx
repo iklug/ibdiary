@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {useDispatch} from 'react-redux'
 import { getUser } from "../redux/profileSlice";
 import {Link, useNavigate} from 'react-router-dom';
@@ -7,13 +7,21 @@ import repeatEvent from "../utils/repeatEvent";
 
 const Login = () => {
 
-
+    
+    
     const dispatch = useDispatch();
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loggedIn, setLoggedIn] = useState(false);
     
+    useEffect(()=>{
+        if(sessionStorage.getItem('user')){
+            console.log('so i guess this just means nothing to you?')
+            navigate('/');
+        }
+    },[]);
+        
 
     const submitLogin = async() => {
         try {

@@ -13,7 +13,7 @@ import { selectCalendar } from './redux/calendarSlice';
 import Login from './pages/Login';
 import { Route, Routes } from 'react-router-dom';
 import Signup from './pages/Signup';
-
+import PageNotFound from './pages/PageNotFound';
 
 function App() {
 
@@ -45,7 +45,6 @@ const today = useSelector(selectToday);
 const view = useSelector(selectView);
 const newEvent = useSelector(selectNewEvent).open;
 const calendar = useSelector(selectCalendar);
-console.log('🥳🥳🥳🥳',calendar);
 
   return (
 
@@ -55,6 +54,7 @@ console.log('🥳🥳🥳🥳',calendar);
         <Route path='/login' element={<Login/>}></Route>
         <Route path='/signup' element={<Signup/>}></Route>
         <Route path='/' element={<div><Banner/><MonthView year={view.year} month={view.month} today={today.day} /></div>}/>
+        <Route path='*' element={<PageNotFound/>}></Route>
       </Routes>
      
     </div>

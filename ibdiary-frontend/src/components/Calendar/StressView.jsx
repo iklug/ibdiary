@@ -1,3 +1,5 @@
+import { useSelector } from "react-redux";
+import { selectCalendar } from "../../redux/calendarSlice";
 import { useState, useEffect } from "react";
 import arrayOfDaysInMonth from "../../utils/arrayOfDaysInMonth";
 import findFirstDay from "../../utils/findFirstDay";
@@ -5,24 +7,20 @@ import Day from "./Day";
 import buildCalendar from "../../utils/buildCalendar";
 import DayOfTheWeek from "../DayOfTheWeek";
 import dayNames from "../../utils/dayNames";
-import { useSelector, useDispatch } from "react-redux";
+import { useDispatch } from "react-redux";
 import { selectNewEvent, openNewEvent } from "../../redux/newEventSlice";
 import { addDay, selectMonths, trackMonth } from "../../redux/calendarSlice";
 import { getUser, selectUser } from "../../redux/profileSlice";
 import AddEvent from "./AddEvent";
 import { selectRepeatEvents } from "../../redux/repeatEventSlice";
 
-const MonthView = ({year, month, today}) => {
 
-
-const backend = import.meta.env.MODE === 'development' ?  `http://localhost:3000` : ''; 
-
+const StressView = ({date, today, year, month}) => {
+    
+ 
 const dispatch = useDispatch();
 
-const sessionInfo = sessionStorage.getItem('user');
-console.log('thisis the sessionInfo up in here', sessionInfo);
 
-const repeatedThings = useSelector(selectRepeatEvents);
 
 const [sixRows, setSixRows] = useState(null);
 const thisMonthDays = arrayOfDaysInMonth(year, month);
@@ -35,12 +33,12 @@ const [newEventDate, setNewEventDate] = useState('');
 const trueMonth = thisMonthDays[0].twoDigitMonth;
 const monthsInState = useSelector(selectMonths);
 const currentUser = useSelector(selectUser);
-console.log(currentUser, 'user');
+
 const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 const [windowHeight, setWindowHeight] = useState(window.innerHeight);
 
 
-// Define a function to update window width in state
+
 const updateWindowWidth = () => {
   setWindowWidth(window.innerWidth);
 };
@@ -69,7 +67,7 @@ useEffect(()=> {
    const getEvents = async() => {
       try {
         console.log('this is running another fetch request e very time');
-          const request = await fetch(`${backend}/event/initial/${year}/${trueMonth}`,{
+          const request = await fetch(`http://localhost:3000/event/initial/${year}/${trueMonth}`,{
               method: 'GET',
               credentials: 'include',
               headers: {
@@ -99,7 +97,6 @@ useEffect(()=> {
 }, [month])
 
 useEffect(()=>{
-    console.log('is this running on refresh');
     const updateUser = async() => {
         try {
             const request = await fetch('http://localhost:3000/user', {
@@ -112,8 +109,7 @@ useEffect(()=>{
                 throw new Error('failed to fetch user @ getUser in MonthView.jsx')
             }
             const data = await request.json();
-            console.log('user data in MonthView line 112',data);
-            sessionStorage.setItem('user', data._id);
+            console.log(data);
             dispatch(getUser(data));
         } catch (error) {
             console.error(error);
@@ -124,16 +120,8 @@ useEffect(()=>{
 
 }, []);
 
-const addNewEvent = (date) => {
-    setNewEvent(!newEvent);
-    setNewEventDate(date);
-}
-
-console.log('messing in month view: ', newEvent, newEventDate );
-
-
 const dayArray = buildCalendar(thisMonthDays, firstDay, daysBefore, nextMonthDays, today);
-const dayArrayMap = dayArray.map(x => <Day {...x} key={`${x.year}-${x.month}-${x.day}`} addNewEvent={addNewEvent} newEventView={newEvent} newEventDate={newEventDate} />)
+const dayArrayMap = dayArray.map(x => <StressDay {...x} key={`${x.year}-${x.month}-${x.day}`} />)
 
 // console.log(window.innerHeight, window.innerWidth);
 
@@ -165,5 +153,4 @@ const dayArrayMap = dayArray.map(x => <Day {...x} key={`${x.year}-${x.month}-${x
         </div>
     )
 }
-
-export default MonthView;
+export default StressView;

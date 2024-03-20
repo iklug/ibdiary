@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {useDispatch} from 'react-redux'
 import { getUser } from "../redux/profileSlice";
 import {Link, useNavigate} from 'react-router-dom';
@@ -12,6 +12,13 @@ const Signup = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [signedUp, setSignedUp] = useState(false);
+
+
+    useEffect(()=>{
+        if(sessionStorage.getItem('user')){
+            navigate('/');
+        }
+    },[]);
     
     const submitSignup = async() => {
         try {
