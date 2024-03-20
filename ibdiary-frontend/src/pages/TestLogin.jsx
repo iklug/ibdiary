@@ -7,7 +7,7 @@ import {useForm} from 'react-hook-form';
 
 
 
-const Login = () => {
+const TestLogin = () => {
 
     const {register,handleSubmit, watch, formState: {errors}, reset} = useForm();
 
@@ -87,4 +87,4 @@ const Login = () => {
     )
 }
 
-export default Login;
+export default TestLogin;

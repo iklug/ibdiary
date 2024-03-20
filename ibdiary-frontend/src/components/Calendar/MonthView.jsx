@@ -11,6 +11,8 @@ import { addDay, selectMonths, trackMonth } from "../../redux/calendarSlice";
 import { getUser, selectUser } from "../../redux/profileSlice";
 import AddEvent from "./AddEvent";
 import { selectRepeatEvents } from "../../redux/repeatEventSlice";
+import { useNavigate } from "react-router-dom";
+
 
 const MonthView = ({year, month, today}) => {
 
@@ -18,9 +20,13 @@ const MonthView = ({year, month, today}) => {
 const backend = import.meta.env.MODE === 'development' ?  `http://localhost:3000` : ''; 
 
 const dispatch = useDispatch();
-
+const navigate = useNavigate();
 const sessionInfo = sessionStorage.getItem('user');
-console.log('thisis the sessionInfo up in here', sessionInfo);
+useEffect(()=>{
+    if(!sessionInfo){
+        navigate('/login');
+    }
+},[])
 
 const repeatedThings = useSelector(selectRepeatEvents);
 
@@ -38,6 +44,8 @@ const currentUser = useSelector(selectUser);
 console.log(currentUser, 'user');
 const [windowWidth, setWindowWidth] = useState(window.innerWidth);
 const [windowHeight, setWindowHeight] = useState(window.innerHeight);
+
+
 
 
 // Define a function to update window width in state
