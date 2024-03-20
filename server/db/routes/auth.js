@@ -27,12 +27,16 @@ router.post('/signup', checkNoAuth, async(req,res, next)=>{
     const salt = saltHash.salt;
     const hash = saltHash.hash;
     try {
+        const userExists = await User.findOne({email: req.body.email});
+        if(userExists){
+            throw new Error('user already exists');
+        }
         const user = await User.create({
             email: req.body.email,
             hash: hash,
             salt: salt,
         })
-        res.json(user);
+        res.json('created new user');
     } catch (error) {
         console.error(error);
         res.status(500).send('failed to create new user');

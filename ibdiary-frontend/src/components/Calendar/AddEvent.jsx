@@ -16,7 +16,7 @@ const AddEvent = ({closeEvent=(()=>console.log('')), defaultDate, reflection=fal
     const [startTime, setStartTime] = useState(false);
     const [endTime, setEndTime] = useState(false);
     const [viewReflection, setViewReflection] = useState(reflection);
-
+    const [errorMessage, setErrorMessage] = useState(false);
     const [newEventObj, setNewEventObj] = useState({
         title: '',
         type: 'event',
@@ -93,7 +93,7 @@ const AddEvent = ({closeEvent=(()=>console.log('')), defaultDate, reflection=fal
                 body: JSON.stringify(event)
             });
             if(!request.ok){
-                throw new Error('request resulted in error @ submitEvent in AddEvent.jsx');
+                throw new Error('title');
             }
             const data = await request.json();
             console.log('add normal event, line 98 in AddEVent', data);
@@ -103,6 +103,7 @@ const AddEvent = ({closeEvent=(()=>console.log('')), defaultDate, reflection=fal
 
         } catch (error) {
             console.error(error);
+            setErrorMessage(true);
         }
     }
 
@@ -118,7 +119,7 @@ const AddEvent = ({closeEvent=(()=>console.log('')), defaultDate, reflection=fal
                 <div className="h-6 w-6 flex justify-center items-center rounded-full hover:bg-gray-200 mr-2 transition-colors duration-150 ease-in text-sm cursor-default select-none float-right -mt-7" onClick={handleX}>X</div>
         
            {!viewReflection && <div className="bg-white flex flex-col select-none appearance-none gap-4 ml-6 mt-6 h-72">
-                <input type="text" value={newEventObj.title}  className="border-b-2 border-blue-400 appearance-none focus:outline-none w-4/5" onChange={(e)=>setNewEventObj((prev)=>{return {...prev, title: e.target.value}})}/>
+                <input type="text" value={newEventObj.title}  className="border-b-2 border-blue-400 appearance-none focus:outline-none w-4/5" placeholder={errorMessage ? 'title required' : ''} onChange={(e)=>setNewEventObj((prev)=>{return {...prev, title: e.target.value}})}/>
                 <div className="flex gap-2 mr-4">
                     {newEventObj.type === 'event' ? <div className="h-6 w-16 rounded-lg bg-blue-200 text-blue-700 text-center opacity-80 hover:opacity-100 flex justify-center items-center" onClick={(e)=>setNewEventObj((prev)=>{return{...prev, type:e.target.textContent}})}>event</div> :<div className="h-6 w-16 rounded-lg bg-gray-100 text-gray-600 text-center opacity-80 hover:opacity-100  flex justify-center items-center" onClick={(e)=>setNewEventObj((prev)=>{return{...prev, type:e.target.textContent}})}>event</div>}
                     {newEventObj.type === 'food' ? <div className="h-6 w-16 rounded-lg  flex justify-center items-center bg-green-200 text-green-700 text-center opacity-80 hover:opacity-100" value='food' onClick={(e)=>setNewEventObj((prev)=>{return{...prev, type:e.target.textContent}})}>food</div> :<div className="h-6 w-16 rounded-lg  flex justify-center items-center bg-gray-100 text-gray-600 text-center opacity-80 hover:opacity-100" value='food' onClick={(e)=>setNewEventObj((prev)=>{return{...prev, type:e.target.textContent}})}>food</div>}

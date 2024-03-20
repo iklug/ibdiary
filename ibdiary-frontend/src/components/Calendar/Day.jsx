@@ -1,5 +1,5 @@
 import { useSelector } from "react-redux";
-import { selectToday } from "../../redux/dateSlice";
+import { selectToday, selectView } from "../../redux/dateSlice";
 import Hour from "./Hour";
 import { selectAmountOfEvents, selectCalendar, selectDay } from "../../redux/calendarSlice";
 import Event from './Event';
@@ -17,12 +17,10 @@ const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth, addNewEvent, 
 
     const date = `${year}-${twoDigitMonth}-${twoDigitDay}`;
     const events = useSelector(selectCalendar);
-    
+    const viewDate = useSelector(selectView);
 
     const todaysEvents = events[date] ? events[date] : null;
-    if(todaysEvents){
-      console.log('😨😨😨😨',todaysEvents);
-    }
+  
     const todayString = useSelector(selectToday).string;
     const blueCircle = `${year}-${month}-${day}` === todayString ? 'border-2 border-blue-300 pl-2 pr-2 rounded-full' : '';
     const today = new Date(year, month, day);
@@ -71,7 +69,7 @@ const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth, addNewEvent, 
     return (
        <div className="border h-full w-full flex flex-col flex-1 items-center pt-2 text-sm font-semibold select-none min-w-0 text-clip">
          <div className="h-full w-full flex flex-col flex-1 items-center text-sm font-semibold select-none min-w-0 text-clip" id={`${year}-${twoDigitMonth}-${twoDigitDay}`} onClick={(e)=>addNewEvent(e.target.id)}>
-             <div className={`${blueCircle} hover:text-blue-400 text-center h-6 min-w-0 relative`} id='open id in single view'>{ day === 1 ? `${thisMonth} ${day}` : `${day}` }</div>
+             <div className={`${blueCircle} hover:text-blue-400 text-center h-6 min-w-0 relative ${viewDate.month === month ? 'text-gray-400' : 'text-gray-300'}`} id='open id in single view'>{ day === 1 ? `${thisMonth} ${day}` : `${day}` }</div>
              {viewReflection && <AddEvent defaultDate={date} reflection={true} closeReflection={()=>setViewReflection(false)}/>}
              {(newEventView && newEventDate === date) && <AddEvent  closeEvent={()=>addNewEvent('')} defaultDate={date} hasReflection={todaysEvents ? todaysEvents.reflection.edited ? true : false : false}/>}
                  {sortedEvents && <div className=" max-h-32 min-w-0 w-full relative">
