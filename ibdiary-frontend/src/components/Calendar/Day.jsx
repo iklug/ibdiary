@@ -71,7 +71,7 @@ const Day = ({day, month, year, hours, twoDigitDay, twoDigitMonth, addNewEvent, 
          <div className="h-full w-full flex flex-col flex-1 items-center text-sm font-semibold select-none min-w-0 text-clip" id={`${year}-${twoDigitMonth}-${twoDigitDay}`} onClick={(e)=>addNewEvent(e.target.id)}>
              <div className={`${blueCircle} hover:text-blue-400 text-center h-6 min-w-0 relative ${viewDate.month === month ? 'text-gray-400' : 'text-gray-300'}`} id='open id in single view'>{ day === 1 ? `${thisMonth} ${day}` : `${day}` }</div>
              {viewReflection && <AddEvent defaultDate={date} reflection={true} closeReflection={()=>setViewReflection(false)}/>}
-             {(newEventView && newEventDate === date) && <AddEvent  closeEvent={()=>addNewEvent('')} defaultDate={date} hasReflection={todaysEvents ? todaysEvents.reflection.edited ? true : false : false}/>}
+             {(newEventView && newEventDate === date) && <AddEvent  closeEvent={()=>addNewEvent('')} defaultDate={date} hasReflection={todaysEvents ? todaysEvents.reflection.edited ? true : false : false} closeReflection={()=>addNewEvent('')}/>}
                  {sortedEvents && <div className=" max-h-32 min-w-0 w-full relative">
                      <div className="flex-col items-start justify-start w-full">
          

@@ -33,7 +33,7 @@ app.use(cors({
       }
   
       // Check if the request's origin is allowed
-      const allowedOrigins = ['http://localhost:5173']; // Add your allowed origins
+      const allowedOrigins = ['http://localhost:5173', 'https://ibdiary.vercel.app', 'https://ibdiary-b6emzf7yf-ians-projects-a0566d81.vercel.app/']; // Add your allowed origins
       if (allowedOrigins.includes(origin)) {
         callback(null, true);
       } else {
