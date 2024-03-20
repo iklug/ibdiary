@@ -16,7 +16,8 @@ const TestLogin = () => {
     
     const dispatch = useDispatch();
     const navigate = useNavigate();
-    
+    const apiURL = import.meta.env.MODE === 'production' ? 'https://ibdiary.fly.dev' : `http://localhost:3000`; 
+
     useEffect(()=>{
         if(sessionStorage.getItem('user')){
             console.log('so i guess this just means nothing to you?')
@@ -26,7 +27,7 @@ const TestLogin = () => {
 
     const onSubmit = async(formData) => {
         try {
-            const request = await fetch('http://localhost:3000/auth/login', {
+            const request = await fetch(`${apiURL}/auth/login`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

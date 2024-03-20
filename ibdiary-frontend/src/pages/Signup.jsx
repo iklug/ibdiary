@@ -19,9 +19,12 @@ const Signup = () => {
         }
     },[]);
     
+    const apiURL = import.meta.env.MODE === 'production' ? 'https://ibdiary.fly.dev' : `http://localhost:3000`; 
+
+
     const onSubmit = async(formData) => {
         try {
-            const request = await fetch('http://localhost:3000/auth/signup', {
+            const request = await fetch(`${apiURL}/auth/signup`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

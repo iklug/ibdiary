@@ -9,7 +9,6 @@ import ConfirmEditRepeatPopup from "./ConfirmEditRepeatPopup";
 
 const EditRepeatingEventDetails = ({title, type, startTime, endTime, repeat, dayId, eventId, close, date, renderOn, color}) => {
 
-    console.log(date);
 
     const [newEventObj, setNewEventObj] = useState({
         title: title,
@@ -30,17 +29,18 @@ const EditRepeatingEventDetails = ({title, type, startTime, endTime, repeat, day
     const [allInstances, setAllInstances] = useState(true);
     const [confirm, setConfirm] = useState(false);
 
-    const backend = import.meta.env.MODE === 'development' ?  `http://localhost:3000` : ''; 
+    const apiURL = import.meta.env.MODE === 'production' ? 'https://ibdiary.fly.dev' : `http://localhost:3000`; 
+
 
     const dispatch = useDispatch();
     const position = renderOn === 'left' ? 'right-[400px]' : 'left-[175px]';
 
-    const submitEvent = async(backend, event) => {
+    const submitEvent = async(apiURL, event) => {
         try {
 
             if(event.repeat > 0){
                 console.log('this is event.instance', event.instances);
-                const request = await fetch(`${backend}/event/${eventId}/${event.instances}`,{
+                const request = await fetch(`${apiURL}/event/${eventId}/${event.instances}`,{
                     method: 'PUT',
                     credentials: 'include',
                     headers: {
@@ -82,7 +82,7 @@ const EditRepeatingEventDetails = ({title, type, startTime, endTime, repeat, day
                 }
         
             } else {
-                const request = await fetch(`${backend}/event/${eventId}`,{
+                const request = await fetch(`${apiURL}/event/${eventId}`,{
                     method: 'PUT',
                     credentials: 'include',
                     headers: {
@@ -166,7 +166,7 @@ const EditRepeatingEventDetails = ({title, type, startTime, endTime, repeat, day
                 <div className="flex items-end justify-center h-28 m-2">
                     <button className="h-8 w-20 rounded-lg bg-blue-400 text-white" onClick={()=>setConfirm(true)}>Save</button>
                 </div>
-                <div className="relative">{confirm && <ConfirmEditRepeatPopup changeInstance={(instance)=>setNewEventObj(prev => {return {...prev, instances: instance}})} cancelFunction={()=>setConfirm(false)} submit={()=>submitEvent(backend, newEventObj)} selected={newEventObj.instances}/>}</div>
+                <div className="relative">{confirm && <ConfirmEditRepeatPopup changeInstance={(instance)=>setNewEventObj(prev => {return {...prev, instances: instance}})} cancelFunction={()=>setConfirm(false)} submit={()=>submitEvent(apiURL, newEventObj)} selected={newEventObj.instances}/>}</div>
         </div>
     )
 }

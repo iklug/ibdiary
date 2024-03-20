@@ -18,10 +18,12 @@ const AddReflection = ({date, closeReflection}) => {
         date: date,
     });
     const dispatch = useDispatch();
+    const apiURL = import.meta.env.MODE === 'production' ? 'https://ibdiary.fly.dev' : `http://localhost:3000`; 
+
 
     const submitReflection = async(obj) => {
         try {
-            const request = await fetch(`http://localhost:3000/event/reflection`, {
+            const request = await fetch(`${apiURL}/event/reflection`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

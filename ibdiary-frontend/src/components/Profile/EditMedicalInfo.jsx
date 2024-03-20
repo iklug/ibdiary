@@ -6,7 +6,6 @@ import { useState } from "react";
 const EditMedicalInfo = ({closeEdit}) => {
 
     const currentUser = useSelector(selectUser).medical;
-    console.log('userinformation: ',currentUser)
     const [user, setUser] = useState({
         diagnosis: currentUser.diagnosis,
         yearOfDiagnosis: currentUser.yearOfDiagnosis,
@@ -18,11 +17,12 @@ const EditMedicalInfo = ({closeEdit}) => {
     });
 
     const dispatch = useDispatch();
+    const apiURL = import.meta.env.MODE === 'production' ? 'https://ibdiary.fly.dev' : `http://localhost:3000`; 
 
     
     const updateInfo = async(userInfo) => {
         try {
-            const request = await fetch('http://localhost:3000/user/medical', {
+            const request = await fetch(`${apiURL}/user/medical`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

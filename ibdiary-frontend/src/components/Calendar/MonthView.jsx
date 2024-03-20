@@ -17,11 +17,12 @@ import { useNavigate } from "react-router-dom";
 const MonthView = ({year, month, today}) => {
 
 
-const backend = import.meta.env.MODE === 'development' ?  `http://localhost:3000` : ''; 
+const apiURL = import.meta.env.MODE === 'production' ? 'https://ibdiary.fly.dev' : `http://localhost:3000`; 
 
 const dispatch = useDispatch();
 const navigate = useNavigate();
 const sessionInfo = sessionStorage.getItem('user');
+
 useEffect(()=>{
     if(!sessionInfo){
         navigate('/login');
@@ -77,7 +78,7 @@ useEffect(()=> {
    const getEvents = async() => {
       try {
         console.log('this is running another fetch request e very time');
-          const request = await fetch(`${backend}/event/initial/${year}/${trueMonth}`,{
+          const request = await fetch(`${apiURL}/event/initial/${year}/${trueMonth}`,{
               method: 'GET',
               credentials: 'include',
               headers: {
@@ -110,7 +111,7 @@ useEffect(()=>{
     console.log('is this running on refresh');
     const updateUser = async() => {
         try {
-            const request = await fetch('http://localhost:3000/user', {
+            const request = await fetch(`${apiURL}/user`, {
                 credentials: 'include',
                 headers: {
                     'Content-Type': 'application/json',

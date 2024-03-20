@@ -24,16 +24,17 @@ const EditEventDetails = ({title, type, startTime, endTime, repeat, dayId, event
     const [allInstances, setAllInstances] = useState(true);
 
 
-    const backend = import.meta.env.MODE === 'development' ?  `http://localhost:3000` : ''; 
+
+    const apiURL = import.meta.env.MODE === 'production' ? 'https://ibdiary.fly.dev' : `http://localhost:3000`; 
 
     const dispatch = useDispatch();
     const position = renderOn === 'left' ? 'right-[400px]' : 'left-[175px]';
 
-    const submitEvent = async(backend, event) => {
+    const submitEvent = async(apiURL, event) => {
         try {
 
             if(event.repeat > 0){
-                const request = await fetch(`${backend}/event/${eventId}/${allInstances ? 'all' : 'single'}`,{
+                const request = await fetch(`${apiURL}/event/${eventId}/${allInstances ? 'all' : 'single'}`,{
                     method: 'PUT',
                     credentials: 'include',
                     headers: {
@@ -49,7 +50,7 @@ const EditEventDetails = ({title, type, startTime, endTime, repeat, dayId, event
                 close();
 
             } else {
-                const request = await fetch(`${backend}/event/${eventId}`,{
+                const request = await fetch(`${apiURL}/event/${eventId}`,{
                     method: 'PUT',
                     credentials: 'include',
                     headers: {
@@ -111,7 +112,7 @@ const EditEventDetails = ({title, type, startTime, endTime, repeat, dayId, event
                 </div>
             </div>
                 <div className="flex items-end justify-center h-28 m-2">
-                    <button className="h-8 w-20 rounded-lg bg-blue-400 text-white" onClick={()=>submitEvent(backend, newEventObj)}>Save</button>
+                    <button className="h-8 w-20 rounded-lg bg-blue-400 text-white" onClick={()=>submitEvent(apiURL, newEventObj)}>Save</button>
                 </div>
         </div>
     )

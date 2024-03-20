@@ -13,11 +13,14 @@ const EventDetails = ({title, type, startTime, endTime, dayId, eventId, close, d
     const [instance, setInstance] = useState('single');
     const [confirm, setConfirm] = useState(false);
 
+    const apiURL = import.meta.env.MODE === 'production' ? 'https://ibdiary.fly.dev' : `http://localhost:3000`; 
+
+
     const deleteEvent = async() => {
         try {
 
             if(repeat > 0 && instance === 'single'){
-                const request = await fetch('http://localhost:3000/event/repeat/single', {
+                const request = await fetch(`${apiURL}/event/repeat/single`, {
                     method: 'DELETE',
                     credentials: 'include',
                     headers: {
@@ -37,7 +40,7 @@ const EventDetails = ({title, type, startTime, endTime, dayId, eventId, close, d
             } 
             
             if(repeat > 0 && instance === 'all'){
-                const request = await fetch('http://localhost:3000/event/repeat/all', {
+                const request = await fetch(`${apiURL}/event/repeat/all`, {
                     method: 'DELETE',
                     credentials: 'include',
                     headers: {
@@ -56,7 +59,7 @@ const EventDetails = ({title, type, startTime, endTime, dayId, eventId, close, d
             
             else {
 
-                const request = await fetch(`http://localhost:3000/event/${eventId}`,{
+                const request = await fetch(`${apiURL}/event/${eventId}`,{
                    method: 'DELETE',
                    credentials: 'include',
                    headers: {

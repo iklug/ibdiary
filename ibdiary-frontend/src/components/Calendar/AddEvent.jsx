@@ -26,6 +26,7 @@ const AddEvent = ({closeEvent=(()=>console.log('')), defaultDate, reflection=fal
         repeat: undefined,
     });
 
+    const apiURL = import.meta.env.MODE === 'production' ? 'https://ibdiary.fly.dev' : `http://localhost:3000`; 
     const calendar = useSelector(selectCalendar);
 
     const handleX = () => {
@@ -61,11 +62,11 @@ const AddEvent = ({closeEvent=(()=>console.log('')), defaultDate, reflection=fal
         setIsMoving(false);
     }
 
-    const submitEvent = async(backend, event) => {
+    const submitEvent = async(apiURL, event) => {
         try {
             
             if(event.repeat > 0){
-            const request = await fetch(`${backend}/event/repeating`, {
+            const request = await fetch(`${apiURL}/event/repeating`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -84,7 +85,7 @@ const AddEvent = ({closeEvent=(()=>console.log('')), defaultDate, reflection=fal
             dispatch(addDay(fixData));
             closeEvent();
             } else {
-            const request = await fetch(`${backend}/event`,{
+            const request = await fetch(`${apiURL}/event`,{
                 method: 'POST',
                 credentials: 'include',
                 headers: {
@@ -150,7 +151,7 @@ const AddEvent = ({closeEvent=(()=>console.log('')), defaultDate, reflection=fal
                 {!hasReflection && <div className="ml-2 bg-purple-300 text-purple-800 w-36 flex justify-center rounded-full p-1" onClick={()=>setViewReflection(true)}>add reflection</div>}
                
             <div className="pr-2 w-full flex flex-1 justify-center items-end -mt-4">
-                <Button size={'med'} color={0} name={'Save'} handleClick={()=>submitEvent(backend, newEventObj)}/>
+                <Button size={'med'} color={0} name={'Save'} handleClick={()=>submitEvent(apiURL, newEventObj)}/>
             </div>
             </div>
             

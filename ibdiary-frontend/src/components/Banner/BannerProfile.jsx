@@ -20,12 +20,12 @@ const dispatch = useDispatch();
 
 const currentUser = useSelector(selectUser);
 
-const user = localStorage.getItem('user');
-console.log('user with localStorage: ', user);
+const apiURL = import.meta.env.MODE === 'production' ? 'https://ibdiary.fly.dev' : `http://localhost:3000`; 
+
 
 const logout = async() => {
     try {
-        const request = await fetch('http://localhost:3000/auth/logout', {
+        const request = await fetch(`${apiURL}/auth/logout`, {
             method: 'GET',
             credentials: 'include',
             headers: {

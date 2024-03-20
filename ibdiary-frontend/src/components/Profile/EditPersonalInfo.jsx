@@ -19,9 +19,12 @@ const EditPersonalInfo = ({closeEdit}) => {
     
     const dispatch = useDispatch();
 
+    const apiURL = import.meta.env.MODE === 'production' ? 'https://ibdiary.fly.dev' : `http://localhost:3000`; 
+
+
     const updateInfo = async(userInfo) => {
         try {
-            const request = await fetch('http://localhost:3000/user/personal', {
+            const request = await fetch(`${apiURL}/user/personal`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {
