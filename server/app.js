@@ -63,8 +63,9 @@ app.use(session({
   store: sessionStore,
   cookie: {
     maxAge: 1000 * 60 * 60 * 24,
-    // secure: true,
-    // sameSite: 'none',
+    //**** comment out when in dev mode ****
+    secure: true,
+    sameSite: 'none',
   },
 }));
 
