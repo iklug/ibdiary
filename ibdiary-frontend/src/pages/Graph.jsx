@@ -39,13 +39,13 @@ export default function Graph() {
   const mathObject = dataMath(graphData, ss);
 
   return (
-    <div className="flex flex-col h-screen max-h-full  w-full">
+    <div className="flex flex-col h-screen max-h-full  w-full bg-green-50">
       {/* i don't think the header is the problem */}
       <GraphHeader>
         <ChevronButtonsMonth />
         <DropdownMenu />
       </GraphHeader>
-      <div className="flex h-full flex-col bg-green-50">
+      <div className="flex h-3/4 flex-col bg-green-50">
         <LineChartComponent
           stress={pieData[0]}
           symptoms={pieData[1]}
@@ -53,11 +53,11 @@ export default function Graph() {
         />
         <div
           id="bottom half of screen"
-          className="bg-green-50 flex justify-center items-center h-1/2 w-full p-6 rounded-lg"
+          className="bg-green-50 flex justify-center items-center h-1/2 w-full rounded-lg pb-4 px-4"
         >
           <div
             id="white box column"
-            className=" bg-white shadow-md rounded-lg h-full w-full flex flex-col justify-between p-4 gap-4"
+            className=" bg-white shadow-md rounded-lg h-full w-full flex flex-col justify-between p-4"
           >
             {mathObject.noData ? (
               <div className="h-full bg-gray-100 rounded-lg flex gap-2 justify-center items-center flex-col">
@@ -72,7 +72,7 @@ export default function Graph() {
               <>
                 <div
                   id="row in white box"
-                  className="flex justify-center gap-2 w-full h-1/2"
+                  className="flex justify-center w-full h-1/2"
                 >
                   <div
                     id="grey box"

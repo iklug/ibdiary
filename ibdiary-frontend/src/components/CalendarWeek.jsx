@@ -82,6 +82,8 @@ export default function CalendarWeek({ month, year, startDay }) {
   ));
 
   return (
-    <div className="flex justify-around text-sm/6 text-gray-500">{buttons}</div>
+    <div className="flex justify-around text-sm/6 text-gray-500 bg-white">
+      {buttons}
+    </div>
   );
 }

@@ -10,7 +10,7 @@ export default function CalendarHeader({ children }) {
   const year = displayedWeek[0].split("-")[0];
   console.log("month bouus", month);
   return (
-    <header className="flex flex-none items-center justify-between border-b border-gray-100 px-6 py-4">
+    <header className="flex flex-none items-center justify-between border-b border-gray-100 px-6 py-4 bg-white">
       <h1 className="text-base font-semibold text-gray-900">
         <time dateTime="">{`${monthArray[month - 1]} ${year}`}</time>
       </h1>

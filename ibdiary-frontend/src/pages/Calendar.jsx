@@ -20,7 +20,7 @@ import monthArray from "../utils/monthArray";
 import ReflectionContainer from "../components/ReflectionContainer";
 export default function Calendar() {
   return (
-    <div className="h-screen w-full flex flex-col pb-20 bg-white">
+    <div className="h-screen w-full flex flex-col pb-20 bg-gray-100">
       <CalendarContainer>
         <CalendarHeader>
           <ChevronButtons />
