@@ -1,0 +1,19 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  /* padding: 200px; */
+  box-sizing: border-box;
+  overflow: hidden;
+
+}
+
+.monthCalSix {
+  height: calc(100vh - 65px);
+}
+
+
+/* .monthCalFive {
+  height: calc(100vh - 60px);
+} */

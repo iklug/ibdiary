@@ -3,17 +3,13 @@
 @tailwind utilities;
 
 :root {
-  /* padding: 200px; */
   box-sizing: border-box;
-  overflow: hidden;
-
 }
-
-.monthCalSix {
-  height: calc(100vh - 65px);
+html,
+body {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  overflow-y: hidden;
+  overflow-x: hidden;
 }
-
-
-/* .monthCalFive {
-  height: calc(100vh - 60px);
-} */

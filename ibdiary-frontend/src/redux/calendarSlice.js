@@ -1,44 +1,51 @@
-import {createSlice} from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 export const calendarSlice = createSlice({
-    name: 'calendar',
-    initialState: {
-        months: [],
-        value: {
-          },
+  name: "calendar",
+  initialState: {
+    active: "",
+    value: {},
+  },
+  reducers: {
+    addData: (state, action) => {
+      state.value = { ...state.value, ...action.payload };
     },
-    reducers: {
-        addMonth: (state, action) => {
-            state.value = [...state, action.payload]
-        },
-        addDay: (state, action) => {
-            state.value = {...state.value, ...action.payload};
-        },
-        addBulk: (state,action) => {
-            state.value = {...state.value, ...action.payload};
-        },
-        deleteDay: (state,action) => {
-            delete state.value[action.payload];
-        },
-        trackMonth: (state,action) => {
-            state.months.push(action.payload);
-        },
-        removeEvent: (state,action) => {
-            // state.value[action.payload.date].events.filter(event => event.id !== action.payload.id);
-            
-            // state.value[action.payload.date].events.filter(event => event._id !== action.payload.id);
-            state.value[action.payload.date].events = state.value[action.payload.date].events.filter(event => event._id !== action.payload.id);
-        },
-        replaceState: (state, action) => {
-            state.months = [];
-            state.value = {};
-        }
-    }
+    addActive: (state, action) => {
+      state.active = action.payload;
+    },
+    changeView: (state, action) => {
+      state.value[state.active].view = action.payload;
+    },
+    addStress: (state, action) => {
+      state.value[state.active].stress = action.payload;
+    },
+    addSymptoms: (state, action) => {
+      state.value[state.active].symptoms = action.payload;
+    },
+    addEntry: (state, action) => {
+      state.value[state.active].entry = action.payload;
+    },
+    defaultView: (state, action) => {
+      state.value[state.active].view = "Reflection";
+    },
+    changeEdit: (state, action) => {
+      state.value[state.active].edit = action.payload;
+    },
+  },
 });
 
-export const {addMonth, addDay, addBulk, deleteDay, trackMonth, removeEvent, replaceState} = calendarSlice.actions;
+export const {
+  addData,
+  addActive,
+  addStress,
+  changeView,
+  addSymptoms,
+  addEntry,
+  defaultView,
+  changeEdit,
+} = calendarSlice.actions;
 export const selectCalendar = (state) => state.calendar.value;
-export const selectDay = day => (state) => state.value[day];
-export const selectMonths = (state) => state.calendar.months;
-export const selectAmountOfEvents = day => (state) => state.value[day].events.length;
+export const selectActive = (state) => state.calendar.active;
+export const selectViewing = (state) =>
+  state.calendar.value[state.calendar.active];
 export default calendarSlice.reducer;
