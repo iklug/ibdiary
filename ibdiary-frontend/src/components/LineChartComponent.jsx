@@ -3,7 +3,9 @@ import { ScatterChart } from "@mui/x-charts";
 import { BarChart } from "@mui/x-charts";
 import { PieChart } from "@mui/x-charts/PieChart";
 import { useState } from "react";
+import { ItemTooltip } from "./ItemTooltip";
 import classNames from "classnames";
+import { ResponsiveChartContainer } from "@mui/x-charts";
 export default function LineChartComponent({ stress, symptoms, days }) {
   const [viewing, setViewing] = useState("stress");
   console.log("🥶", viewing);
@@ -63,6 +65,7 @@ export default function LineChartComponent({ stress, symptoms, days }) {
             itemMarkWidth: 15,
           }}
         />
+        {/* <ItemTooltip /> */}
       </div>
     </div>
   );
